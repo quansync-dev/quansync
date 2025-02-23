@@ -1,4 +1,4 @@
-# a?sync
+# quansync
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
@@ -7,6 +7,8 @@
 [![License][license-src]][license-href]
 
 Create sync/async APIs with same, usable logic.
+
+**Quan**tum + **Sync** - A "superposition" between `sync` and `async`.
 
 - Typesafe
 - ESM, modern JavaScript
@@ -17,22 +19,22 @@ Heavily inspired by [`genasync`](https://github.com/loganfsmyth/gensync) by [@lo
 ## Usage
 
 ```bash
-pnpm i axsync
+pnpm i quansync
 ```
 
 ```ts
 import fs from 'node:fs'
-import { axsync } from 'axsync'
+import { quansync } from 'quansync'
 
-// Create an axsync function by providing `sync` and `async` implementations
-const readFile = axsync({
+// Create an quansync function by providing `sync` and `async` implementations
+const readFile = quansync({
   sync: fs.readFileSync,
   async: fs.promises.readFile,
 })
 
-// Create an axsync function by providing a generator function
-const myFunction = axsync(function* (filename) {
-  // Use `yield*` to call another axsync function
+// Create an quansync function by providing a generator function
+const myFunction = quansync(function* (filename) {
+  // Use `yield*` to call another quansync function
   const code = yield * readFile(filename, 'utf8')
 
   return `// some custom prefix\n${code}`
@@ -59,13 +61,13 @@ const asyncResult = await myFunction.async('./some-file.js')
 
 <!-- Badges -->
 
-[npm-version-src]: https://img.shields.io/npm/v/axsync?style=flat&colorA=080f12&colorB=1fa669
-[npm-version-href]: https://npmjs.com/package/axsync
-[npm-downloads-src]: https://img.shields.io/npm/dm/axsync?style=flat&colorA=080f12&colorB=1fa669
-[npm-downloads-href]: https://npmjs.com/package/axsync
-[bundle-src]: https://img.shields.io/bundlephobia/minzip/axsync?style=flat&colorA=080f12&colorB=1fa669&label=minzip
-[bundle-href]: https://bundlephobia.com/result?p=axsync
-[license-src]: https://img.shields.io/github/license/antfu/axsync.svg?style=flat&colorA=080f12&colorB=1fa669
-[license-href]: https://github.com/antfu/axsync/blob/main/LICENSE
+[npm-version-src]: https://img.shields.io/npm/v/quansync?style=flat&colorA=080f12&colorB=1fa669
+[npm-version-href]: https://npmjs.com/package/quansync
+[npm-downloads-src]: https://img.shields.io/npm/dm/quansync?style=flat&colorA=080f12&colorB=1fa669
+[npm-downloads-href]: https://npmjs.com/package/quansync
+[bundle-src]: https://img.shields.io/bundlephobia/minzip/quansync?style=flat&colorA=080f12&colorB=1fa669&label=minzip
+[bundle-href]: https://bundlephobia.com/result?p=quansync
+[license-src]: https://img.shields.io/github/license/antfu/quansync.svg?style=flat&colorA=080f12&colorB=1fa669
+[license-href]: https://github.com/antfu/quansync/blob/main/LICENSE
 [jsdocs-src]: https://img.shields.io/badge/jsdocs-reference-080f12?style=flat&colorA=080f12&colorB=1fa669
-[jsdocs-href]: https://www.jsdocs.io/package/axsync
+[jsdocs-href]: https://www.jsdocs.io/package/quansync

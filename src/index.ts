@@ -1,43 +1,43 @@
-export interface AxsyncInputObject<Args extends any[], Return> {
+export interface QuansyncInputObject<Args extends any[], Return> {
   name?: string
   sync: (...args: Args) => Return
   async: (...args: Args) => Promise<Return>
 }
-export type AxsyncInputGenerator<Args extends any[], Return>
-  = ((...args: Args) => Generator<AxsyncYield<any>, Return, unknown>)
+export type QuansyncInputGenerator<Args extends any[], Return>
+  = ((...args: Args) => Generator<QuansyncYield<any>, Return, unknown>)
 
-export interface AxsyncYield<R> {
+export interface QuansyncYield<R> {
   name?: string
   sync: () => R
   async: () => Promise<R>
-  __isAxsync: true
+  __isQuansync: true
 }
 
-export type AxsyncGenerator<Return = any, Yield = any> =
-  Generator<AxsyncYield<Yield>, Return, Yield>
+export type QuansyncGenerator<Return = any, Yield = any> =
+  Generator<QuansyncYield<Yield>, Return, Yield>
 
-export type AxsyncFn<Args extends any[] = [], Return = any> =
-  ((...args: Args) => AxsyncGenerator<Return>)
+export type QuansyncFn<Args extends any[] = [], Return = any> =
+  ((...args: Args) => QuansyncGenerator<Return>)
   & {
     sync: (...args: Args) => Return
     async: (...args: Args) => Promise<Return>
   }
 
-export function isAxsyncYield<T>(value: any | AxsyncYield<T>): value is AxsyncYield<T> {
-  return typeof value === 'object' && value !== null && '__isAxsync' in value
+export function isQuansyncYield<T>(value: any | QuansyncYield<T>): value is QuansyncYield<T> {
+  return typeof value === 'object' && value !== null && '__isQuansync' in value
 }
 
-function axsyncObject<Args extends any[], Return>(
-  options: AxsyncInputObject<Args, Return>,
-): AxsyncFn<Args, Return> {
-  const generator = function *(...args: Args): AxsyncGenerator<Return> {
+function quansyncObject<Args extends any[], Return>(
+  options: QuansyncInputObject<Args, Return>,
+): QuansyncFn<Args, Return> {
+  const generator = function *(...args: Args): QuansyncGenerator<Return> {
     return yield {
       name: options.name,
       sync: () => options.sync(...args),
       async: () => options.async(...args),
-      __isAxsync: true,
+      __isQuansync: true,
     }
-  } as unknown as AxsyncFn<Args, Return>
+  } as unknown as QuansyncFn<Args, Return>
 
   generator.sync = options.sync
   generator.async = options.async
@@ -45,12 +45,12 @@ function axsyncObject<Args extends any[], Return>(
   return generator
 }
 
-function axsyncGenerator<Args extends any[], Return>(
-  generator: AxsyncInputGenerator<Args, Return>,
-): AxsyncFn<Args, Return> {
+function quansyncGenerator<Args extends any[], Return>(
+  generator: QuansyncInputGenerator<Args, Return>,
+): QuansyncFn<Args, Return> {
   function sync(...args: Args): Return {
     const unwrap = (value: any): any => {
-      return isAxsyncYield(value)
+      return isQuansyncYield(value)
         ? value.sync()
         : value
     }
@@ -64,7 +64,7 @@ function axsyncGenerator<Args extends any[], Return>(
 
   async function async(...args: Args): Promise<Return> {
     const unwrap = (value: any): any => {
-      return isAxsyncYield(value)
+      return isQuansyncYield(value)
         ? value.async()
         : value
     }
@@ -76,24 +76,24 @@ function axsyncGenerator<Args extends any[], Return>(
     return await unwrap(current.value)
   }
 
-  return axsyncObject({
+  return quansyncObject({
     name: generator.name,
     async,
     sync,
   })
 }
 
-export function axsync<Args extends any[], Return>(
-  options: AxsyncInputObject<Args, Return>,
-): AxsyncFn<Args, Return>
-export function axsync<Args extends any[], Return>(
-  options: AxsyncInputGenerator<Args, Return>,
-): AxsyncFn<Args, Return>
-export function axsync<Args extends any[], Return>(
-  options: AxsyncInputObject<Args, Return> | AxsyncInputGenerator<Args, Return>,
-): AxsyncFn<Args, Return> {
+export function quansync<Args extends any[], Return>(
+  options: QuansyncInputObject<Args, Return>,
+): QuansyncFn<Args, Return>
+export function quansync<Args extends any[], Return>(
+  options: QuansyncInputGenerator<Args, Return>,
+): QuansyncFn<Args, Return>
+export function quansync<Args extends any[], Return>(
+  options: QuansyncInputObject<Args, Return> | QuansyncInputGenerator<Args, Return>,
+): QuansyncFn<Args, Return> {
   if (typeof options === 'function')
-    return axsyncGenerator(options)
+    return quansyncGenerator(options)
   else
-    return axsyncObject(options)
+    return quansyncObject(options)
 }
