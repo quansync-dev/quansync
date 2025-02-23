@@ -6,9 +6,9 @@
 [![JSDocs][jsdocs-src]][jsdocs-href]
 [![License][license-src]][license-href]
 
-Create sync/async APIs with same, usable logic.
+Create sync/async APIs with usable logic.
 
-**Quan**tum + **Sync** - A "superposition" between `sync` and `async`.
+**Quan**tum + **Sync** - "_Superposition_" between `sync` and `async`.
 
 - Typesafe
 - ESM, modern JavaScript

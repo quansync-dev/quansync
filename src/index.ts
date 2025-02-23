@@ -16,6 +16,9 @@ export interface QuansyncYield<R> {
 export type QuansyncGenerator<Return = any, Yield = any> =
   Generator<QuansyncYield<Yield>, Return, Yield>
 
+/**
+ * "Superposition" between async and sync.
+ */
 export type QuansyncFn<Args extends any[] = [], Return = any> =
   ((...args: Args) => QuansyncGenerator<Return>)
   & {
