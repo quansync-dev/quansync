@@ -36,7 +36,7 @@ export function isQuansyncYield<T>(value: any | QuansyncYield<T>): value is Quan
   return typeof value === 'object' && value !== null && '__isQuansync' in value
 }
 
-function quansyncObject<Args extends any[], Return>(
+function fromObject<Args extends any[], Return>(
   options: QuansyncInputObject<Args, Return>,
 ): QuansyncFn<Args, Return> {
   const generator = function *(...args: Args): QuansyncGenerator<Return, any> {
@@ -63,10 +63,10 @@ function unwrapSync(value: any): any {
 function unwrapAsync(value: any): Promise<any> {
   return isQuansyncYield(value)
     ? value.async()
-    : Promise.resolve(value)
+    : value
 }
 
-function quansyncGenerator<Args extends any[], Return>(
+function fromGenerator<Args extends any[], Return>(
   generator: QuansyncInputGenerator<Args, Return>,
 ): QuansyncFn<Args, Return> {
   function sync(...args: Args): Return {
@@ -87,7 +87,7 @@ function quansyncGenerator<Args extends any[], Return>(
     return await unwrapAsync(current.value)
   }
 
-  return quansyncObject({
+  return fromObject({
     name: generator.name,
     async,
     sync,
@@ -101,7 +101,7 @@ export function quansync<Args extends any[], Return>(
   options: QuansyncInput<Args, Return>,
 ): QuansyncFn<Args, Return> {
   if (typeof options === 'function')
-    return quansyncGenerator(options)
+    return fromGenerator(options)
   else
-    return quansyncObject(options)
+    return fromObject(options)
 }
