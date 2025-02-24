@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { isQuansyncYield, quansync } from '../src'
+import { isQuansyncYield, promiseToGenerator, quansync } from '../src'
 
 it('basic', async () => {
   const add = quansync({
@@ -49,9 +49,64 @@ it('generator', async () => {
       const value = yield * add(sum, a)
       sum = value
     }
-    return yield * toString(sum)
+    const foo = yield * toString(sum)
+    return foo
   })
 
   expect(multiply.sync(2, 3)).toBe('6')
   expect(await multiply.async(4, 5)).toBe('20')
+})
+
+it('yield optional promise', async () => {
+  interface Transformer {
+    transform: (code: string) => string | Promise<string>
+  }
+
+  const transform = quansync(function *(transformers: Transformer[], code: string) {
+    let current = code
+    for (const transformer of transformers) {
+      current = yield * promiseToGenerator(transformer.transform(current))
+      // ...
+    }
+    return current
+  })
+
+  expect(transform.sync([], '')).toBe('')
+  await expect(transform.async([], '')).resolves.toBe('')
+
+  expect(
+    transform.sync([
+      {
+        transform: (code: string) => `${code}1`,
+      },
+    ], 'foo'),
+  ).toBe('foo1')
+  expect(() =>
+    transform.sync([
+      {
+        transform: async (code: string) => `${code}1`,
+      },
+    ], 'foo'),
+  ).toThrowErrorMatchingInlineSnapshot(`[Error: [Quansync] Yielded an unexpected promise in sync context]`)
+
+  await expect(
+    transform.async([
+      {
+        transform: async (code: string) => `${code}1`,
+      },
+    ], 'foo'),
+  ).resolves.toBe('foo1')
+})
+
+it('yield promise', async () => {
+  const run = quansync(function *(code: string) {
+    const result = yield new Promise<string>((resolve) => {
+      setTimeout(() => resolve(code), 10)
+    })
+    return result
+  })
+
+  expect(() => run.sync('foo'))
+    .toThrowErrorMatchingInlineSnapshot(`[Error: [Quansync] Yielded an unexpected promise in sync context]`)
+  await expect(run.async('foo')).resolves.toBe('foo')
 })

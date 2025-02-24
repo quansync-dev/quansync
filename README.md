@@ -28,8 +28,8 @@ import { quansync } from 'quansync'
 
 // Create an quansync function by providing `sync` and `async` implementations
 const readFile = quansync({
-  sync: fs.readFileSync,
-  async: fs.promises.readFile,
+  sync: (path: string) => fs.readFileSync(path),
+  async: (path: string) => fs.promises.readFile(path),
 })
 
 // Create an quansync function by providing a generator function
