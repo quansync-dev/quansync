@@ -141,7 +141,7 @@ export function quansync<Return, Args extends any[] = []>(
  */
 export function quansyncMacro<Return, Args extends any[] = []>(
   options: QuansyncInput<Return, Args> | ((...args: Args) => Promise<Return> | Return),
-): QuansyncFn<Return> {
+): QuansyncFn<Return, Args> {
   return quansync(options as any) as any
 }
 
