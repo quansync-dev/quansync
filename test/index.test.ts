@@ -57,6 +57,21 @@ it('generator', async () => {
   expect(await multiply.async(4, 5)).toBe('20')
 })
 
+it('consume with await', async () => {
+  const add = quansync({
+    name: 'add',
+    sync: (a: number, b: number) => a + b,
+    async: async (a: number, b: number) => {
+      await new Promise(resolve => setTimeout(resolve, 10))
+      return a + b
+    },
+  })
+
+  expect(add(2, 3)).resolves.toBe(5)
+  expect(add.sync(2, 6)).toBe(8)
+  expect(add.async(2, 3)).resolves.toBe(5)
+})
+
 it('yield optional promise', async () => {
   interface Transformer {
     transform: (code: string) => string | Promise<string>

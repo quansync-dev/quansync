@@ -27,7 +27,7 @@ export type QuansyncGenerator<Return = any, Yield = unknown> =
  * "Superposition" function that can be consumed in both sync and async contexts.
  */
 export type QuansyncFn<Return = any, Args extends any[] = []> =
-  ((...args: Args) => QuansyncGenerator<Return>)
+  ((...args: Args) => QuansyncGenerator<Return> & Promise<Return>)
   & {
     sync: (...args: Args) => Return
     async: (...args: Args) => Promise<Return>
@@ -53,12 +53,15 @@ function fromObject<Return, Args extends any[]>(
       async: (options.async as any).bind(null, ...args),
       __isQuansync: true,
     }
-  } as unknown as QuansyncFn<Return, Args>
-
-  generator.sync = options.sync
-  generator.async = options.async
-
-  return generator
+  }
+  const fn = (...args: Args): any => {
+    const iter = generator(...args) as unknown as QuansyncGenerator<Return, Args> & Promise<Return>
+    iter.then = fn => options.async(...args).then(fn)
+    return iter
+  }
+  fn.sync = options.sync
+  fn.async = options.async
+  return fn
 }
 
 function fromPromise<T>(promise: Promise<T> | T): QuansyncFn<T, []> {
@@ -135,8 +138,8 @@ export function quansync<Return, Args extends any[] = []>(
  */
 export function quansyncMacro<Return, Args extends any[] = []>(
   options: QuansyncInput<Return, Args> | ((...args: Args) => Promise<Return> | Return),
-): QuansyncFn<Return, Args> {
-  return quansync(options as any)
+): QuansyncFn<Return> {
+  return quansync(options as any) as any
 }
 
 /**
