@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { isQuansyncYield, promiseToGenerator, quansync } from '../src'
+import { isQuansyncYield, quansync, toGenerator } from '../src'
 
 it('basic', async () => {
   const add = quansync({
@@ -80,7 +80,7 @@ it('yield optional promise', async () => {
   const transform = quansync(function *(transformers: Transformer[], code: string) {
     let current = code
     for (const transformer of transformers) {
-      current = yield * promiseToGenerator(transformer.transform(current))
+      current = yield * toGenerator(transformer.transform(current))
       // ...
     }
     return current
