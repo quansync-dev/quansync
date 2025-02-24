@@ -47,6 +47,37 @@ const result = myFunction.sync('./some-file.js')
 const asyncResult = await myFunction.async('./some-file.js')
 ```
 
+## Build-time Macro
+
+You can use `quansync` as a build-time macro to generate sync and async functions in an async/await style.
+
+```ts
+import fs from 'node:fs'
+import { quansyncMacro } from 'quansync'
+
+// Create an quansync function by providing `sync` and `async` implementations
+const readFile = quansyncMacro({
+  sync: (path: string) => fs.readFileSync(path),
+  async: (path: string) => fs.promises.readFile(path),
+})
+
+// Create an quansync function by providing a **async** function
+const myFunction = quansyncMacro(async (filename) => {
+  // Use `await` to call another quansync function
+  const code = await readFile(filename, 'utf8')
+
+  return `// some custom prefix\n${code}`
+})
+
+// Use it as a sync function
+const result = myFunction.sync('./some-file.js')
+
+// Use it as an async function
+const asyncResult = await myFunction.async('./some-file.js')
+```
+
+For more details on usage, see [unplugin-quansync](https://github.com/unplugin/unplugin-quansync#usage).
+
 ## Sponsors
 
 <p align="center">
