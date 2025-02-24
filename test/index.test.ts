@@ -67,9 +67,9 @@ it('consume with await', async () => {
     },
   })
 
-  expect(add(2, 3)).resolves.toBe(5)
+  await expect(add(2, 3)).resolves.toBe(5)
   expect(add.sync(2, 6)).toBe(8)
-  expect(add.async(2, 3)).resolves.toBe(5)
+  await expect(add.async(2, 3)).resolves.toBe(5)
 })
 
 it('yield optional promise', async () => {
