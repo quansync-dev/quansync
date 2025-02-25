@@ -47,9 +47,19 @@ const result = myFunction.sync('./some-file.js')
 const asyncResult = await myFunction.async('./some-file.js')
 ```
 
+## Why
+
+// TODO:
+
+## How it works
+
+// TODO:
+
 ## Build-time Macro
 
-You can use `quansync` as a build-time macro to generate sync and async functions in an async/await style.
+If you don't like the `function*` and `yield*` syntax, we also provide a build-time macro via [unplugin-quansync](https://github.com/unplugin/unplugin-quansync#usage) allowing you use quansync with async/await syntax, while still able to get the sync version out of that.
+
+Here is an example:
 
 ```ts
 import fs from 'node:fs'
@@ -76,7 +86,7 @@ const result = myFunction.sync('./some-file.js')
 const asyncResult = await myFunction.async('./some-file.js')
 ```
 
-For more details on usage, see [unplugin-quansync](https://github.com/unplugin/unplugin-quansync#usage).
+For more details on usage, refer to [unplugin-quansync's docs](https://github.com/unplugin/unplugin-quansync#usage).
 
 ## Sponsors
 
