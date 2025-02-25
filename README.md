@@ -71,7 +71,7 @@ const readFile = quansyncMacro({
   async: (path: string) => fs.promises.readFile(path),
 })
 
-// Create a quansync function by providing a **async** function
+// Create a quansync function by providing an **async** function
 const myFunction = quansyncMacro(async (filename) => {
   // Use `await` to call another quansync function
   const code = await readFile(filename, 'utf8')
