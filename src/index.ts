@@ -59,7 +59,7 @@ function fromObject<Return, Args extends any[]>(
   }
   const fn = (...args: Args): any => {
     const iter = generator(...args) as unknown as QuansyncGenerator<Return, Args> & Promise<Return>
-    iter.then = fn => options.async(...args).then(fn)
+    iter.then = (...thenArgs) => options.async(...args).then(...thenArgs)
     return iter
   }
   fn.sync = options.sync

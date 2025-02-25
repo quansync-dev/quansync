@@ -125,3 +125,19 @@ it('yield promise', async () => {
     .toThrowErrorMatchingInlineSnapshot(`[Error: [Quansync] Yielded an unexpected promise in sync context]`)
   await expect(run.async('foo')).resolves.toBe('foo')
 })
+
+it('handle errors', async () => {
+  const throwError = quansync({
+    name: 'throwError',
+    sync: () => {
+      throw new Error('sync error')
+    },
+    async: async () => {
+      throw new Error('async error')
+    },
+  })
+
+  await expect(throwError()).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: async error]`)
+  await expect(throwError.async()).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: async error]`)
+  expect(() => throwError.sync()).toThrowErrorMatchingInlineSnapshot(`[Error: sync error]`)
+})
