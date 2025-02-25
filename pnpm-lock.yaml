@@ -26,6 +26,9 @@ importers:
       eslint:
         specifier: ^9.20.0
         version: 9.20.0(jiti@2.4.2)
+      gensync:
+        specifier: 1.0.0-beta.2
+        version: 1.0.0-beta.2
       lint-staged:
         specifier: ^15.4.3
         version: 15.4.3
@@ -35,6 +38,9 @@ importers:
       simple-git-hooks:
         specifier: ^2.11.1
         version: 2.11.1
+      tinybench:
+        specifier: ^3.1.1
+        version: 3.1.1
       tsx:
         specifier: ^4.19.2
         version: 4.19.2
@@ -2607,6 +2613,10 @@ packages:
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
 
+  tinybench@3.1.1:
+    resolution: {integrity: sha512-74pmf47HY/bHqamcCMGris+1AtGGsqTZ3Hc/UK4QvSmRuf/9PIF9753+c8XBh7JfX2r9KeZtVjOYjd6vFpc0qQ==}
+    engines: {node: '>=18.0.0'}
+
   tinyexec@0.3.2:
     resolution: {integrity: sha512-KQQR9yN7R5+OSwaK0XQoj22pwHoTlgYqmUscPYoknOoWCWfj/5/ABTMRi69FrKU5ffPVh5QcFikpWJI/P1ocHA==}
 
@@ -3643,7 +3653,7 @@ snapshots:
       '@vue/shared': 3.3.10
       estree-walker: 2.0.2
       magic-string: 0.30.17
-      postcss: 8.4.49
+      postcss: 8.5.1
       source-map-js: 1.2.1
 
   '@vue/compiler-ssr@3.3.10':
@@ -5581,6 +5591,8 @@ snapshots:
       yallist: 4.0.0
 
   tinybench@2.9.0: {}
+
+  tinybench@3.1.1: {}
 
   tinyexec@0.3.2: {}
 
