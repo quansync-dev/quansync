@@ -47,8 +47,8 @@ export function isQuansyncYield<T>(value: any | QuansyncYield<T>): value is Quan
 }
 
 function fromObject<Return, Args extends any[]>(
-  options: QuansyncInputObject<Return, Args >,
-): QuansyncFn<Return, Args > {
+  options: QuansyncInputObject<Return, Args>,
+): QuansyncFn<Return, Args> {
   const generator = function *(...args: Args): QuansyncGenerator<Return, any> {
     return yield {
       name: options.name,
