@@ -1,14 +1,8 @@
 // @ts-check
 import gensync from 'gensync'
-import { Bench, hrtimeNow } from 'tinybench'
+import { bench, do_not_optimize, run, summary } from 'mitata'
 // eslint-disable-next-line antfu/no-import-dist
 import { quansync } from '../dist/index.mjs'
-
-const bench = new Bench({
-  name: 'sync benchmark',
-  time: 100,
-  now: hrtimeNow,
-})
 
 const sync = () => 10
 const async = async () => 10
@@ -31,48 +25,53 @@ const gensyncAdd = gensync(/** @param {number} n */ function* (n) {
   return (yield * gensyncFn()) + n
 })
 
-bench
-  .add('sync: native fn', () => {
-    sync()
+summary(() => {
+  bench('sync: native fn', function* () {
+    yield () => do_not_optimize(sync())
   })
-  .add('sync: quansync fn', () => {
-    quansyncFn.sync()
+  bench('sync: quansync fn', function* () {
+    yield () => do_not_optimize(quansyncFn.sync())
   })
-  .add('sync: gensync fn ', () => {
-    gensyncFn.sync()
+  bench('sync: gensync fn ', function* () {
+    yield () => do_not_optimize(gensyncFn.sync())
   })
+})
 
-  .add('sync: native add', () => {
-    addNativeSync(1)
+summary(() => {
+  bench('sync: native add', function* () {
+    yield () => do_not_optimize(addNativeSync(1))
   })
-  .add('sync: quansync add', () => {
-    quansyncAdd.sync(1)
+  bench('sync: quansync add', function* () {
+    yield () => do_not_optimize(quansyncAdd.sync(1))
   })
-  .add('sync: gensync add', () => {
-    gensyncAdd.sync(1)
+  bench('sync: gensync add ', function* () {
+    yield () => do_not_optimize(gensyncAdd.sync(1))
   })
+})
 
-  // ASYNC
-  .add('async: native fn', async () => {
-    await async()
+summary(() => {
+  bench('async: native fn', function* () {
+    yield async () => do_not_optimize(await async())
   })
-  .add('async: quansync fn', async () => {
-    await quansyncFn.async()
+  bench('async: quansync fn', function* () {
+    yield async () => do_not_optimize(await quansyncFn.async())
   })
-  .add('async: gensync fn ', async () => {
-    await gensyncFn.async()
+  bench('async: gensync fn ', function* () {
+    yield async () => do_not_optimize(await gensyncFn.async())
   })
+})
 
-  .add('async: native add', async () => {
-    await addNativeAsync(1)
+summary(() => {
+  bench('async: native add', function* () {
+    yield async () => do_not_optimize(await addNativeAsync(1))
   })
-  .add('async: quansync add', async () => {
-    await quansyncAdd.async(1)
+  bench('async: quansync add', function* () {
+    yield async () => do_not_optimize(await quansyncAdd.async(1))
   })
-  .add('async: gensync add', async () => {
-    await gensyncAdd.async(1)
+  bench('async: gensync add ', function* () {
+    yield async () => do_not_optimize(await gensyncAdd.async(1))
   })
+})
 
 console.info('Running benchmark...')
-await bench.run()
-console.table(bench.table())
+await run()

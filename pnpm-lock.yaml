@@ -32,15 +32,15 @@ importers:
       lint-staged:
         specifier: ^15.4.3
         version: 15.4.3
+      mitata:
+        specifier: ^1.0.34
+        version: 1.0.34
       pnpm:
         specifier: ^10.2.1
         version: 10.2.1
       simple-git-hooks:
         specifier: ^2.11.1
         version: 2.11.1
-      tinybench:
-        specifier: ^3.1.1
-        version: 3.1.1
       tsx:
         specifier: ^4.19.2
         version: 4.19.2
@@ -1992,6 +1992,9 @@ packages:
     resolution: {integrity: sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==}
     engines: {node: '>= 8'}
 
+  mitata@1.0.34:
+    resolution: {integrity: sha512-Mc3zrtNBKIMeHSCQ0XqRLo1vbdIx1wvFV9c8NJAiyho6AjNfMY8bVhbS12bwciUdd1t4rj8099CH3N3NFahaUA==}
+
   mkdirp@1.0.4:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
     engines: {node: '>=10'}
@@ -2612,10 +2615,6 @@ packages:
 
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
-
-  tinybench@3.1.1:
-    resolution: {integrity: sha512-74pmf47HY/bHqamcCMGris+1AtGGsqTZ3Hc/UK4QvSmRuf/9PIF9753+c8XBh7JfX2r9KeZtVjOYjd6vFpc0qQ==}
-    engines: {node: '>=18.0.0'}
 
   tinyexec@0.3.2:
     resolution: {integrity: sha512-KQQR9yN7R5+OSwaK0XQoj22pwHoTlgYqmUscPYoknOoWCWfj/5/ABTMRi69FrKU5ffPVh5QcFikpWJI/P1ocHA==}
@@ -5004,6 +5003,8 @@ snapshots:
       minipass: 3.3.6
       yallist: 4.0.0
 
+  mitata@1.0.34: {}
+
   mkdirp@1.0.4: {}
 
   mkdist@2.2.0(typescript@5.7.3):
@@ -5591,8 +5592,6 @@ snapshots:
       yallist: 4.0.0
 
   tinybench@2.9.0: {}
-
-  tinybench@3.1.1: {}
 
   tinyexec@0.3.2: {}
 
