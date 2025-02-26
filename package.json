@@ -5,14 +5,20 @@
   "packageManager": "pnpm@10.5.1",
   "description": "Create sync/async APIs with usable logic",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
+  "contributors": [
+    { "name": "三咲智子 Kevin Deng", "email": "sxzz@sxzz.moe" }
+  ],
   "license": "MIT",
-  "funding": "https://github.com/sponsors/antfu",
-  "homepage": "https://github.com/antfu/quansync#readme",
+  "funding": [
+    { "type": "individual", "url": "https://github.com/sponsors/antfu" },
+    { "type": "individual", "url": "https://github.com/sponsors/sxzz" }
+  ],
+  "homepage": "https://github.com/antfu-collective/quansync#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/antfu/quansync.git"
+    "url": "git+https://github.com/antfu-collective/quansync.git"
   },
-  "bugs": "https://github.com/antfu/quansync/issues",
+  "bugs": "https://github.com/antfu-collective/quansync/issues",
   "keywords": [
     "async",
     "sync",

@@ -96,9 +96,15 @@ For more details on usage, refer to [unplugin-quansync's docs](https://github.co
   </a>
 </p>
 
+<p align="center">
+  <a href="https://cdn.jsdelivr.net/gh/sxzz/sponsors/sponsors.svg">
+    <img src='https://cdn.jsdelivr.net/gh/sxzz/sponsors/sponsors.svg'/>
+  </a>
+</p>
+
 ## License
 
-[MIT](./LICENSE) License © [Anthony Fu](https://github.com/antfu)
+[MIT](./LICENSE) License © [Anthony Fu](https://github.com/antfu) and [Kevin Deng](https://github.com/sxzz)
 
 <!-- Badges -->
 
