@@ -26,9 +26,15 @@ importers:
       eslint:
         specifier: ^9.20.0
         version: 9.20.0(jiti@2.4.2)
+      gensync:
+        specifier: 1.0.0-beta.2
+        version: 1.0.0-beta.2
       lint-staged:
         specifier: ^15.4.3
         version: 15.4.3
+      mitata:
+        specifier: ^1.0.34
+        version: 1.0.34
       pnpm:
         specifier: ^10.2.1
         version: 10.2.1
@@ -1986,6 +1992,9 @@ packages:
     resolution: {integrity: sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==}
     engines: {node: '>= 8'}
 
+  mitata@1.0.34:
+    resolution: {integrity: sha512-Mc3zrtNBKIMeHSCQ0XqRLo1vbdIx1wvFV9c8NJAiyho6AjNfMY8bVhbS12bwciUdd1t4rj8099CH3N3NFahaUA==}
+
   mkdirp@1.0.4:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
     engines: {node: '>=10'}
@@ -3643,7 +3652,7 @@ snapshots:
       '@vue/shared': 3.3.10
       estree-walker: 2.0.2
       magic-string: 0.30.17
-      postcss: 8.4.49
+      postcss: 8.5.1
       source-map-js: 1.2.1
 
   '@vue/compiler-ssr@3.3.10':
@@ -4993,6 +5002,8 @@ snapshots:
     dependencies:
       minipass: 3.3.6
       yallist: 4.0.0
+
+  mitata@1.0.34: {}
 
   mkdirp@1.0.4: {}
 
