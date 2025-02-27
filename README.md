@@ -74,16 +74,16 @@ Here is an example:
 
 ```ts
 import fs from 'node:fs'
-import { quansyncMacro } from 'quansync'
+import { quansync } from 'quansync/macro'
 
 // Create a quansync function by providing `sync` and `async` implementations
-const readFile = quansyncMacro({
+const readFile = quansync({
   sync: (path: string) => fs.readFileSync(path),
   async: (path: string) => fs.promises.readFile(path),
 })
 
 // Create a quansync function by providing an **async** function
-const myFunction = quansyncMacro(async (filename) => {
+const myFunction = quansync(async (filename) => {
   // Use `await` to call another quansync function
   const code = await readFile(filename, 'utf8')
 
