@@ -14,11 +14,14 @@ export type QuansyncInput<Return, Args extends any[]> =
 export type QuansyncGenerator<Return = any, Yield = unknown> =
   Generator<Yield, Return, Awaited<Yield>> & { __quansync?: true }
 
+export type QuansyncAwaitableGenerator<Return = any, Yield = unknown> =
+  QuansyncGenerator<Return, Yield> & Promise<Return>
+
 /**
  * "Superposition" function that can be consumed in both sync and async contexts.
  */
 export type QuansyncFn<Return = any, Args extends any[] = []> =
-  ((...args: Args) => QuansyncGenerator<Return> & Promise<Return>)
+  ((...args: Args) => QuansyncAwaitableGenerator<Return>)
   & {
     sync: (...args: Args) => Return
     async: (...args: Args) => Promise<Return>
@@ -36,7 +39,7 @@ function isQuansyncGenerator<T>(value: any): value is QuansyncGenerator<T> {
   return isGenerator(value) && '__quansync' in value
 }
 
-const GET_IS_ASYNC = Symbol.for('quansync.getIsAsync')
+export const GET_IS_ASYNC = Symbol.for('quansync.getIsAsync')
 
 function fromObject<Return, Args extends any[]>(
   options: QuansyncInputObject<Return, Args>,
@@ -48,7 +51,7 @@ function fromObject<Return, Args extends any[]>(
     return options.sync.apply(this, args)
   }
   function fn(this: any, ...args: Args): any {
-    const iter = generator.apply(this, args) as unknown as QuansyncGenerator<Return, Args> & Promise<Return>
+    const iter = generator.apply(this, args) as unknown as QuansyncAwaitableGenerator<Return, Args>
     iter.then = (...thenArgs) => options.async.apply(this, args).then(...thenArgs)
     iter.__quansync = true
     return iter
