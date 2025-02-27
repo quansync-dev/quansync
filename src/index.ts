@@ -33,13 +33,13 @@ function isGenerator<T>(value: any): value is Generator<T> {
   return value && typeof value === 'object' && typeof value[Symbol.iterator] === 'function'
 }
 
-const START_FLAG = Symbol.for('quansync:start')
+const GET_IS_ASYNC = Symbol.for('quansync.getIsAsync')
 
 function fromObject<Return, Args extends any[]>(
   options: QuansyncInputObject<Return, Args>,
 ): QuansyncFn<Return, Args> {
   const generator = function* (...args: Args): QuansyncGenerator<Return, any> {
-    const isAsync = yield START_FLAG
+    const isAsync = yield GET_IS_ASYNC
     if (isAsync)
       return yield options.async(...args)
     return options.sync(...args)
@@ -66,7 +66,7 @@ function fromPromise<T>(promise: Promise<T> | T): QuansyncFn<T, []> {
 }
 
 function unwrapYield(value: any, isAsync?: boolean): any {
-  if (value === START_FLAG)
+  if (value === GET_IS_ASYNC)
     return isAsync
   if (!isAsync && isThenable(value))
     throw new Error(ERROR_PROMISE_IN_SYNC)
@@ -125,7 +125,7 @@ export function quansync<Return, Args extends any[] = []>(
 export function quansyncMacro<Return, Args extends any[] = []>(
   options: QuansyncInput<Return, Args> | ((...args: Args) => Promise<Return> | Return),
 ): QuansyncFn<Return, Args> {
-  return quansync(options as any) as any
+  return quansync(options as any)
 }
 
 /**
