@@ -5,6 +5,9 @@ export default defineBuildConfig({
     'src/index',
     'src/macro',
   ],
-  declaration: 'node16',
+  declaration: 'compatible',
+  rollup: {
+    emitCJS: true,
+  },
   clean: true,
 })

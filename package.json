@@ -26,12 +26,26 @@
   ],
   "sideEffects": false,
   "exports": {
-    ".": "./dist/index.mjs",
-    "./macro": "./dist/macro.mjs"
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./macro": {
+      "import": "./dist/macro.mjs",
+      "require": "./dist/macro.cjs"
+    }
   },
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*",
+        "./*"
+      ]
+    }
+  },
   "files": [
     "dist"
   ],
