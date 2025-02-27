@@ -136,6 +136,3 @@ export function toGenerator<T>(promise: Promise<T> | QuansyncGenerator<T> | T): 
     return promise
   return fromPromise(promise as Promise<T>)()
 }
-
-// @ts-expect-error - x
-export { default as gensync } from 'gensync'
