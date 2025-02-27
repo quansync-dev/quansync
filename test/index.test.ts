@@ -159,3 +159,15 @@ it('yield generator', async () => {
   expect(multiply.sync()).toBe('strstr')
   await expect(multiply.async()).resolves.toBe('strstr')
 })
+
+it('handles tail call', async () => {
+  const echo = quansync({
+    sync: (v: string) => v,
+    async: v => Promise.resolve(v),
+  })
+  const produce = quansync(() => echo('hello'))
+
+  await expect(produce()).resolves.toBe('hello')
+  await expect(produce.async()).resolves.toBe('hello')
+  expect(produce.sync()).toBe('hello')
+})
