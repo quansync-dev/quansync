@@ -132,3 +132,30 @@ it('handle errors', async () => {
   await expect(throwError.async()).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: async error]`)
   expect(() => throwError.sync()).toThrowErrorMatchingInlineSnapshot(`[Error: sync error]`)
 })
+
+it('yield generator', async () => {
+  const toString = quansync({
+    name: 'toString',
+    sync: (value: any) => String(value),
+    async: async (value: any) => String(value),
+  })
+
+  function* produce() {
+    yield 1
+    yield 2
+    return 3
+  }
+
+  const multiply = quansync(function* () {
+    const plainGenerator = produce()
+    expect(yield plainGenerator).toBe(plainGenerator)
+
+    const result = (yield toString('str')) as string
+    expect(result).toBe('str')
+
+    return result + (yield * toString('str'))
+  })
+
+  expect(multiply.sync()).toBe('strstr')
+  await expect(multiply.async()).resolves.toBe('strstr')
+})

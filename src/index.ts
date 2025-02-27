@@ -4,15 +4,15 @@ export interface QuansyncInputObject<Return, Args extends any[]> {
   async: (...args: Args) => Promise<Return>
 }
 
-export type QuansyncInputGenerator<Return, Args extends any[]>
+export type QuansyncGeneratorFn<Return, Args extends any[]>
   = ((...args: Args) => QuansyncGenerator<Return>)
 
 export type QuansyncInput<Return, Args extends any[]> =
   | QuansyncInputObject<Return, Args>
-  | QuansyncInputGenerator<Return, Args>
+  | QuansyncGeneratorFn<Return, Args>
 
 export type QuansyncGenerator<Return = any, Yield = unknown> =
-  Generator<Yield, Return, Awaited<Yield>>
+  Generator<Yield, Return, Awaited<Yield>> & { __quansync?: true }
 
 /**
  * "Superposition" function that can be consumed in both sync and async contexts.
@@ -32,6 +32,9 @@ function isThenable<T>(value: any): value is Promise<T> {
 function isGenerator<T>(value: any): value is Generator<T> {
   return value && typeof value === 'object' && typeof value[Symbol.iterator] === 'function'
 }
+function isQuansyncGenerator<T>(value: any): value is QuansyncGenerator<T> {
+  return isGenerator(value) && '__quansync' in value
+}
 
 const GET_IS_ASYNC = Symbol.for('quansync.getIsAsync')
 
@@ -47,6 +50,7 @@ function fromObject<Return, Args extends any[]>(
   const fn = (...args: Args): any => {
     const iter = generator(...args) as unknown as QuansyncGenerator<Return, Args> & Promise<Return>
     iter.then = (...thenArgs) => options.async(...args).then(...thenArgs)
+    iter.__quansync = true
     return iter
   }
   fn.sync = options.sync
@@ -68,36 +72,36 @@ function fromPromise<T>(promise: Promise<T> | T): QuansyncFn<T, []> {
 function unwrapYield(value: any, isAsync?: boolean): any {
   if (value === GET_IS_ASYNC)
     return isAsync
+  if (isQuansyncGenerator(value))
+    return isAsync ? iterateAsync(value) : iterateSync(value)
   if (!isAsync && isThenable(value))
     throw new Error(ERROR_PROMISE_IN_SYNC)
   return value
 }
 
-function fromGenerator<Return, Args extends any[]>(
-  generator: QuansyncInputGenerator<Return, Args>,
+function iterateSync<Return>(generator: QuansyncGenerator<Return, unknown>): Return {
+  let current = generator.next()
+  while (!current.done) {
+    current = generator.next(unwrapYield(current.value))
+  }
+  return unwrapYield(current.value)
+}
+
+async function iterateAsync<Return>(generator: QuansyncGenerator<Return, unknown>): Promise<Return> {
+  let current = generator.next()
+  while (!current.done) {
+    current = generator.next(await unwrapYield(current.value, true))
+  }
+  return current.value
+}
+
+function fromGeneratorFn<Return, Args extends any[]>(
+  generatorFn: QuansyncGeneratorFn<Return, Args>,
 ): QuansyncFn<Return, Args> {
-  function sync(...args: Args): Return {
-    const iterator = generator(...args)
-    let current = iterator.next()
-    while (!current.done) {
-      current = iterator.next(unwrapYield(current.value))
-    }
-    return unwrapYield(current.value)
-  }
-
-  async function async(...args: Args): Promise<Return> {
-    const iterator = generator(...args)
-    let current = iterator.next()
-    while (!current.done) {
-      current = iterator.next(await unwrapYield(current.value, true))
-    }
-    return current.value
-  }
-
   return fromObject({
-    name: generator.name,
-    async,
-    sync,
+    name: generatorFn.name,
+    async: (...args) => iterateAsync(generatorFn(...args)),
+    sync: (...args) => iterateSync(generatorFn(...args)),
   })
 }
 
@@ -110,7 +114,7 @@ export function quansync<Return, Args extends any[] = []>(
   if (isThenable(options))
     return fromPromise<Return>(options)
   if (typeof options === 'function')
-    return fromGenerator(options)
+    return fromGeneratorFn(options)
   else
     return fromObject(options)
 }
@@ -134,5 +138,5 @@ export function quansyncMacro<Return, Args extends any[] = []>(
 export function toGenerator<T>(promise: Promise<T> | QuansyncGenerator<T> | T): QuansyncGenerator<T> {
   if (isGenerator(promise))
     return promise
-  return fromPromise(promise as Promise<T>)()
+  return fromPromise(promise)()
 }
