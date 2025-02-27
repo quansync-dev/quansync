@@ -63,6 +63,9 @@ Run the following command to benchmark the performance of `quansync`:
 pnpm run build && pnpm run benchmark
 ```
 
+Benchmark results indicate that each `yield` incurs an overhead of
+approximately 150 ns, comparable to that of `await sync()`. (On Apple M1 Max)
+
 ## Build-time Macro
 
 If you don't like the `function*` and `yield*` syntax, we also provide a build-time macro via [unplugin-quansync](https://github.com/unplugin/unplugin-quansync#usage) allowing you use quansync with async/await syntax, while still able to get the sync version out of that.

@@ -41,10 +41,13 @@ summary(() => {
   bench('sync: native add', function* () {
     yield () => do_not_optimize(addNativeSync(1))
   })
+  bench('sync: native await add', function* () {
+    yield async () => do_not_optimize(await addNativeSync(1))
+  })
   bench('sync: quansync add', function* () {
     yield () => do_not_optimize(quansyncAdd.sync(1))
   })
-  bench('sync: gensync add ', function* () {
+  bench('sync: gensync add', function* () {
     yield () => do_not_optimize(gensyncAdd.sync(1))
   })
 })
@@ -68,7 +71,7 @@ summary(() => {
   bench('async: quansync add', function* () {
     yield async () => do_not_optimize(await quansyncAdd.async(1))
   })
-  bench('async: gensync add ', function* () {
+  bench('async: gensync add', function* () {
     yield async () => do_not_optimize(await gensyncAdd.async(1))
   })
 })
