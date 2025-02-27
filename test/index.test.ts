@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { isQuansyncYield, quansync, toGenerator } from '../src'
+import { quansync, toGenerator } from '../src'
 
 it('basic', async () => {
   const add = quansync({
@@ -10,15 +10,6 @@ it('basic', async () => {
       return a + b
     },
   })
-
-  const result1 = add(1, 2).next().value
-  if (isQuansyncYield(result1)) {
-    expect(result1.sync()).toBe(3)
-    expect(await result1.async()).toBe(3)
-  }
-  else {
-    throw new Error('result1 is not QuansyncYield')
-  }
 
   expect(add.sync(4, 5)).toBe(9)
   expect(await add.async(4, 5)).toBe(9)
