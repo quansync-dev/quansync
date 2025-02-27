@@ -11,17 +11,8 @@ export type QuansyncInput<Return, Args extends any[]> =
   | QuansyncInputObject<Return, Args>
   | QuansyncInputGenerator<Return, Args>
 
-export interface QuansyncYield<R> {
-  name?: string
-  sync: () => R
-  async: () => Promise<R>
-  __isQuansync: true
-}
-
-export type UnwrapQuansyncReturn<T> = T extends QuansyncYield<infer R> ? Awaited<R> : Awaited<T>
-
 export type QuansyncGenerator<Return = any, Yield = unknown> =
-  Generator<Yield, Return, UnwrapQuansyncReturn<Yield>>
+  Generator<Yield, Return, Awaited<Yield>>
 
 /**
  * "Superposition" function that can be consumed in both sync and async contexts.
@@ -42,20 +33,16 @@ function isGenerator<T>(value: any): value is Generator<T> {
   return value && typeof value === 'object' && typeof value[Symbol.iterator] === 'function'
 }
 
-export function isQuansyncYield<T>(value: any | QuansyncYield<T>): value is QuansyncYield<T> {
-  return typeof value === 'object' && value !== null && '__isQuansync' in value
-}
+const START_FLAG = Symbol.for('quansync:start')
 
 function fromObject<Return, Args extends any[]>(
   options: QuansyncInputObject<Return, Args>,
 ): QuansyncFn<Return, Args> {
-  const generator = function *(...args: Args): QuansyncGenerator<Return, any> {
-    return yield {
-      name: options.name,
-      sync: (options.sync as any).bind(null, ...args),
-      async: (options.async as any).bind(null, ...args),
-      __isQuansync: true,
-    }
+  const generator = function* (...args: Args): QuansyncGenerator<Return, any> {
+    const isAsync = yield START_FLAG
+    if (isAsync)
+      return yield options.async(...args)
+    return options.sync(...args)
   }
   const fn = (...args: Args): any => {
     const iter = generator(...args) as unknown as QuansyncGenerator<Return, Args> & Promise<Return>
@@ -78,16 +65,12 @@ function fromPromise<T>(promise: Promise<T> | T): QuansyncFn<T, []> {
   })
 }
 
-function unwrapSync(value: any): any {
-  if (isQuansyncYield(value))
-    return value.sync()
-  if (isThenable(value))
+function unwrapYield(value: any, isAsync?: boolean): any {
+  if (value === START_FLAG)
+    return isAsync
+  if (!isAsync && isThenable(value))
     throw new Error(ERROR_PROMISE_IN_SYNC)
   return value
-}
-
-function unwrapAsync(value: any): Promise<any> {
-  return isQuansyncYield(value) ? value.async() : value
 }
 
 function fromGenerator<Return, Args extends any[]>(
@@ -97,18 +80,18 @@ function fromGenerator<Return, Args extends any[]>(
     const iterator = generator(...args)
     let current = iterator.next()
     while (!current.done) {
-      current = iterator.next(unwrapSync(current.value))
+      current = iterator.next(unwrapYield(current.value))
     }
-    return unwrapSync(current.value)
+    return unwrapYield(current.value)
   }
 
   async function async(...args: Args): Promise<Return> {
     const iterator = generator(...args)
     let current = iterator.next()
     while (!current.done) {
-      current = iterator.next(await unwrapAsync(current.value))
+      current = iterator.next(await unwrapYield(current.value, true))
     }
-    return unwrapAsync(current.value)
+    return current.value
   }
 
   return fromObject({
@@ -153,3 +136,6 @@ export function toGenerator<T>(promise: Promise<T> | QuansyncGenerator<T> | T): 
     return promise
   return fromPromise(promise as Promise<T>)()
 }
+
+// @ts-expect-error - x
+export { default as gensync } from 'gensync'
