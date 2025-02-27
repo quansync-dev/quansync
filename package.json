@@ -26,7 +26,8 @@
   ],
   "sideEffects": false,
   "exports": {
-    ".": "./dist/index.mjs"
+    ".": "./dist/index.mjs",
+    "./macro": "./dist/macro.mjs"
   },
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",

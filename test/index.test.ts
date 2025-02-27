@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest'
 import { quansync, toGenerator } from '../src'
+import { quansync as quansyncMacro } from '../src/macro'
 
 it('basic', async () => {
   const add = quansync({
@@ -170,4 +171,8 @@ it('handles tail call', async () => {
   await expect(produce()).resolves.toBe('hello')
   await expect(produce.async()).resolves.toBe('hello')
   expect(produce.sync()).toBe('hello')
+})
+
+it('import macro version', () => {
+  expect(quansyncMacro).toBe(quansync)
 })

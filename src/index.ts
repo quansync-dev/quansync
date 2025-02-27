@@ -120,19 +120,6 @@ export function quansync<Return, Args extends any[] = []>(
 }
 
 /**
- * This function is equivalent to `quansync` but accepts a fake argument type of async functions.
- *
- * This requires to be used with a macro transformer. Do NOT use it directly.
- *
- * @internal
- */
-export function quansyncMacro<Return, Args extends any[] = []>(
-  options: QuansyncInput<Return, Args> | ((...args: Args) => Promise<Return> | Return),
-): QuansyncFn<Return, Args> {
-  return quansync(options as any)
-}
-
-/**
  * Converts a promise to a Quansync generator.
  */
 export function toGenerator<T>(promise: Promise<T> | QuansyncGenerator<T> | T): QuansyncGenerator<T> {
