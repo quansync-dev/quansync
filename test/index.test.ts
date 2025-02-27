@@ -176,3 +176,39 @@ it('handles tail call', async () => {
 it('import macro version', () => {
   expect(quansyncMacro).toBe(quansync)
 })
+
+it('bind this', async () => {
+  const obj = quansync({
+    sync(this: any) {
+      return this
+    },
+    async async(this: any) {
+      return this
+    },
+  })
+
+  const fn = quansync(function* (this: any) {
+    const result = yield * (obj.call(this))
+    expect(this).toBe(result)
+    return result
+  })
+
+  class Cls {
+    sync() {
+      return fn.sync.call(this)
+    }
+
+    async() {
+      return fn.async.call(this)
+    }
+
+    async await() {
+      return await fn.call(this)
+    }
+  }
+
+  const cls = new Cls()
+  await expect(cls.await()).resolves.instanceOf(Cls)
+  await expect(cls.async()).resolves.instanceOf(Cls)
+  expect(cls.sync()).instanceOf(Cls)
+})

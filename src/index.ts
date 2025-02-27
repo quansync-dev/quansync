@@ -41,15 +41,15 @@ const GET_IS_ASYNC = Symbol.for('quansync.getIsAsync')
 function fromObject<Return, Args extends any[]>(
   options: QuansyncInputObject<Return, Args>,
 ): QuansyncFn<Return, Args> {
-  const generator = function* (...args: Args): QuansyncGenerator<Return, any> {
+  const generator = function* (this: any, ...args: Args): QuansyncGenerator<Return, any> {
     const isAsync = yield GET_IS_ASYNC
     if (isAsync)
-      return yield options.async(...args)
-    return options.sync(...args)
+      return yield options.async.apply(this, args)
+    return options.sync.apply(this, args)
   }
-  const fn = (...args: Args): any => {
-    const iter = generator(...args) as unknown as QuansyncGenerator<Return, Args> & Promise<Return>
-    iter.then = (...thenArgs) => options.async(...args).then(...thenArgs)
+  function fn(this: any, ...args: Args): any {
+    const iter = generator.apply(this, args) as unknown as QuansyncGenerator<Return, Args> & Promise<Return>
+    iter.then = (...thenArgs) => options.async.apply(this, args).then(...thenArgs)
     iter.__quansync = true
     return iter
   }
@@ -100,8 +100,12 @@ function fromGeneratorFn<Return, Args extends any[]>(
 ): QuansyncFn<Return, Args> {
   return fromObject({
     name: generatorFn.name,
-    async: (...args) => iterateAsync(generatorFn(...args)),
-    sync: (...args) => iterateSync(generatorFn(...args)),
+    async(...args) {
+      return iterateAsync(generatorFn.apply(this, args))
+    },
+    sync(...args) {
+      return iterateSync(generatorFn.apply(this, args))
+    },
   })
 }
 
