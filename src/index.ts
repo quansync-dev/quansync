@@ -59,7 +59,12 @@ function unwrapYield(value: any, isAsync?: boolean): any {
 function iterateSync<Return>(generator: QuansyncGenerator<Return, unknown>): Return {
   let current = generator.next()
   while (!current.done) {
-    current = generator.next(unwrapYield(current.value))
+    try {
+      current = generator.next(unwrapYield(current.value))
+    }
+    catch (err) {
+      current = generator.throw(err)
+    }
   }
   return unwrapYield(current.value)
 }

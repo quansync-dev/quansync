@@ -145,18 +145,25 @@ it('handle errors', async () => {
     },
   })
 
-  const fn = quansync(function* () {
+  const returnError = quansync(function* (fn: () => any) {
     try {
-      yield * throwError()
+      yield * fn()
     }
     catch (err) {
       return err
     }
   })
 
-  await expect(fn()).resolves.toThrowErrorMatchingInlineSnapshot(`[Error: async error]`)
-  await expect(fn.async()).resolves.toThrowErrorMatchingInlineSnapshot(`[Error: async error]`)
-  expect(fn.sync()).toMatchInlineSnapshot(`[Error: sync error]`)
+  const fn = quansync(function* (fn: () => any) {
+    return yield * fn()
+  })
+
+  await expect(returnError(throwError)).resolves.toThrowErrorMatchingInlineSnapshot(`[Error: async error]`)
+  await expect(returnError.async(throwError)).resolves.toThrowErrorMatchingInlineSnapshot(`[Error: async error]`)
+  expect(returnError.sync(throwError)).toMatchInlineSnapshot(`[Error: sync error]`)
+
+  expect(returnError.sync(() => fn(throwError))).toMatchInlineSnapshot(`[Error: sync error]`)
+  await expect(returnError.async(() => fn(throwError))).resolves.toMatchInlineSnapshot(`[Error: async error]`)
 })
 
 it('yield generator', async () => {
