@@ -67,7 +67,12 @@ function iterateSync<Return>(generator: QuansyncGenerator<Return, unknown>): Ret
 async function iterateAsync<Return>(generator: QuansyncGenerator<Return, unknown>): Promise<Return> {
   let current = generator.next()
   while (!current.done) {
-    current = generator.next(await unwrapYield(current.value, true))
+    try {
+      current = generator.next(await unwrapYield(current.value, true))
+    }
+    catch (err) {
+      current = generator.throw(err)
+    }
   }
   return current.value
 }
