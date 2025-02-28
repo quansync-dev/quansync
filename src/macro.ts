@@ -1,4 +1,4 @@
-import type { QuansyncFn, QuansyncInput } from './index'
+import type { QuansyncFn, QuansyncInput } from './types'
 import { quansync as _quansync } from './index'
 
 /**

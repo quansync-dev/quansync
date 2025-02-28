@@ -1,32 +1,6 @@
-export interface QuansyncInputObject<Return, Args extends any[]> {
-  name?: string
-  sync: (...args: Args) => Return
-  async: (...args: Args) => Promise<Return>
-}
+import type { QuansyncAwaitableGenerator, QuansyncFn, QuansyncGenerator, QuansyncGeneratorFn, QuansyncInput, QuansyncInputObject } from './types'
 
-export type QuansyncGeneratorFn<Return, Args extends any[]>
-  = ((...args: Args) => QuansyncGenerator<Return>)
-
-export type QuansyncInput<Return, Args extends any[]> =
-  | QuansyncInputObject<Return, Args>
-  | QuansyncGeneratorFn<Return, Args>
-
-export type QuansyncGenerator<Return = any, Yield = unknown> =
-  Generator<Yield, Return, Awaited<Yield>> & { __quansync?: true }
-
-export type QuansyncAwaitableGenerator<Return = any, Yield = unknown> =
-  QuansyncGenerator<Return, Yield> & Promise<Return>
-
-/**
- * "Superposition" function that can be consumed in both sync and async contexts.
- */
-export type QuansyncFn<Return = any, Args extends any[] = []> =
-  ((...args: Args) => QuansyncAwaitableGenerator<Return>)
-  & {
-    sync: (...args: Args) => Return
-    async: (...args: Args) => Promise<Return>
-  }
-
+export const GET_IS_ASYNC = Symbol.for('quansync.getIsAsync')
 const ERROR_PROMISE_IN_SYNC = '[Quansync] Yielded an unexpected promise in sync context'
 
 function isThenable<T>(value: any): value is Promise<T> {
@@ -38,8 +12,6 @@ function isGenerator<T>(value: any): value is Generator<T> {
 function isQuansyncGenerator<T>(value: any): value is QuansyncGenerator<T> {
   return isGenerator(value) && '__quansync' in value
 }
-
-export const GET_IS_ASYNC = Symbol.for('quansync.getIsAsync')
 
 function fromObject<Return, Args extends any[]>(
   options: QuansyncInputObject<Return, Args>,

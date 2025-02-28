@@ -34,5 +34,8 @@
     "json",
     "jsonc",
     "yaml"
+  ],
+  "cSpell.words": [
+    "quansync"
   ]
 }
