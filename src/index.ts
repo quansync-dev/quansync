@@ -1,5 +1,7 @@
 import type { QuansyncAwaitableGenerator, QuansyncFn, QuansyncGenerator, QuansyncGeneratorFn, QuansyncInput, QuansyncInputObject } from './types'
 
+export * from './types'
+
 export const GET_IS_ASYNC = Symbol.for('quansync.getIsAsync')
 const ERROR_PROMISE_IN_SYNC = '[Quansync] Yielded an unexpected promise in sync context'
 
