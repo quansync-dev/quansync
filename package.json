@@ -13,12 +13,12 @@
     { "type": "individual", "url": "https://github.com/sponsors/antfu" },
     { "type": "individual", "url": "https://github.com/sponsors/sxzz" }
   ],
-  "homepage": "https://github.com/antfu-collective/quansync#readme",
+  "homepage": "https://github.com/quansync-dev/quansync#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/antfu-collective/quansync.git"
+    "url": "git+https://github.com/quansync-dev/quansync.git"
   },
-  "bugs": "https://github.com/antfu-collective/quansync/issues",
+  "bugs": "https://github.com/quansync-dev/quansync/issues",
   "keywords": [
     "async",
     "sync",
