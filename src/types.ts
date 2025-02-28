@@ -15,7 +15,7 @@ export type QuansyncGenerator<Return = any, Yield = unknown> =
   Generator<Yield, Return, Awaited<Yield>> & { __quansync?: true }
 
 export type QuansyncAwaitableGenerator<Return = any, Yield = unknown> =
-  QuansyncGenerator<Return, Yield> & Promise<Return>
+  QuansyncGenerator<Return, Yield> & PromiseLike<Return>
 
 /**
  * "Superposition" function that can be consumed in both sync and async contexts.
