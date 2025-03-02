@@ -1,6 +1,8 @@
 import type { QuansyncFn, QuansyncInput } from './types'
 import { quansync as _quansync } from './index'
 
+export type * from './types'
+
 /**
  * This function is equivalent to `quansync` from main entry
  * but accepts a fake argument type of async functions.
