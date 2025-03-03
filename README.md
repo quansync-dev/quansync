@@ -16,6 +16,10 @@ Create sync/async APIs with usable logic.
 
 Heavily inspired by [`genasync`](https://github.com/loganfsmyth/gensync) by [@loganfsmyth](https://github.com/loganfsmyth).
 
+## Why & How
+
+Please refer to Anthony's blog post: [**Async, Sync, in Between**](https://antfu.me/posts/async-sync-in-between).
+
 ## Usage
 
 ```bash
@@ -46,25 +50,6 @@ const result = myFunction.sync('./some-file.js')
 // Use it as an async function
 const asyncResult = await myFunction.async('./some-file.js')
 ```
-
-## Why
-
-// TODO:
-
-## How it works
-
-// TODO:
-
-## Benchmark
-
-Run the following command to benchmark the performance of `quansync`:
-
-```bash
-pnpm run build && pnpm run benchmark
-```
-
-Benchmark results indicate that each `yield` incurs an overhead of
-approximately 150 ns, comparable to that of `await sync()`. (On Apple M1 Max)
 
 ## Build-time Macro
 
@@ -98,6 +83,17 @@ const asyncResult = await myFunction.async('./some-file.js')
 ```
 
 For more details on usage, refer to [unplugin-quansync's docs](https://github.com/unplugin/unplugin-quansync#usage).
+
+## Benchmark
+
+Run the following command to benchmark the performance of `quansync`:
+
+```bash
+pnpm run build && pnpm run benchmark
+```
+
+Benchmark results indicate that each `yield` incurs an overhead of
+approximately 150 ns, comparable to that of `await sync()`. (On Apple M1 Max)
 
 ## Sponsors
 
