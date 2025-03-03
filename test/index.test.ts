@@ -193,6 +193,18 @@ it('yield generator', async () => {
   await expect(multiply.async()).resolves.toBe('strstr')
 })
 
+it('yield toGenerator array', async () => {
+  const run = quansync(function* () {
+    const input = ['1', 2, 3]
+    const result = yield* toGenerator(input)
+    expect(result).toBe(input)
+    return result
+  })
+
+  expect(run.sync()).toEqual(['1', 2, 3])
+  await expect(run.async()).resolves.toEqual(['1', 2, 3])
+})
+
 it('handles tail call', async () => {
   const echo = quansync({
     sync: (v: string) => v,

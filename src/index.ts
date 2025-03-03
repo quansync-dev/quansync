@@ -8,11 +8,8 @@ const ERROR_PROMISE_IN_SYNC = '[Quansync] Yielded an unexpected promise in sync 
 function isThenable<T>(value: any): value is Promise<T> {
   return value && typeof value === 'object' && typeof value.then === 'function'
 }
-function isGenerator<T>(value: any): value is Generator<T> {
-  return value && typeof value === 'object' && typeof value[Symbol.iterator] === 'function'
-}
 function isQuansyncGenerator<T>(value: any): value is QuansyncGenerator<T> {
-  return isGenerator(value) && '__quansync' in value
+  return value && typeof value === 'object' && typeof value[Symbol.iterator] === 'function' && '__quansync' in value
 }
 
 function fromObject<Return, Args extends any[]>(
@@ -114,7 +111,7 @@ export function quansync<Return, Args extends any[] = []>(
  * Converts a promise to a Quansync generator.
  */
 export function toGenerator<T>(promise: Promise<T> | QuansyncGenerator<T> | T): QuansyncGenerator<T> {
-  if (isGenerator(promise))
+  if (isQuansyncGenerator(promise))
     return promise
   return fromPromise(promise)()
 }
