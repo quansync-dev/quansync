@@ -2,16 +2,25 @@
   "name": "quansync",
   "type": "module",
   "version": "0.2.7",
-  "packageManager": "pnpm@10.5.1",
+  "packageManager": "pnpm@10.5.2",
   "description": "Create sync/async APIs with usable logic",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "contributors": [
-    { "name": "三咲智子 Kevin Deng", "email": "sxzz@sxzz.moe" }
+    {
+      "name": "三咲智子 Kevin Deng",
+      "email": "sxzz@sxzz.moe"
+    }
   ],
   "license": "MIT",
   "funding": [
-    { "type": "individual", "url": "https://github.com/sponsors/antfu" },
-    { "type": "individual", "url": "https://github.com/sponsors/sxzz" }
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/antfu"
+    },
+    {
+      "type": "individual",
+      "url": "https://github.com/sponsors/sxzz"
+    }
   ],
   "homepage": "https://github.com/quansync-dev/quansync#readme",
   "repository": {
@@ -66,8 +75,8 @@
     "prepare": "simple-git-hooks"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^4.3.0",
-    "@types/node": "^22.13.5",
+    "@antfu/eslint-config": "^4.4.0",
+    "@types/node": "^22.13.8",
     "bumpp": "^10.0.3",
     "eslint": "^9.21.0",
     "gensync": "1.0.0-beta.2",
@@ -75,7 +84,7 @@
     "mitata": "^1.0.34",
     "simple-git-hooks": "^2.11.1",
     "tsx": "^4.19.3",
-    "typescript": "^5.7.3",
+    "typescript": "^5.8.2",
     "unbuild": "^3.5.0",
     "vite": "^6.2.0",
     "vitest": "^3.0.7"

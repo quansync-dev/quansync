@@ -35,13 +35,13 @@ it('generator', async () => {
     },
   })
 
-  const multiply = quansync(function *(a: number, b: number) {
+  const multiply = quansync(function* (a: number, b: number) {
     let sum = (yield 0) as number
     for (let i = 0; i < b; i++) {
-      const value = yield * add(sum, a)
+      const value = yield* add(sum, a)
       sum = value
     }
-    const foo = yield * toString(sum)
+    const foo = yield* toString(sum)
     return foo
   })
 
@@ -69,10 +69,10 @@ it('yield optional promise', async () => {
     transform: (code: string) => string | Promise<string>
   }
 
-  const transform = quansync(function *(transformers: Transformer[], code: string) {
+  const transform = quansync(function* (transformers: Transformer[], code: string) {
     let current = code
     for (const transformer of transformers) {
-      current = yield * toGenerator(transformer.transform(current))
+      current = yield* toGenerator(transformer.transform(current))
       // ...
     }
     return current
@@ -106,7 +106,7 @@ it('yield optional promise', async () => {
 })
 
 it('yield promise', async () => {
-  const run = quansync(function *(code: string) {
+  const run = quansync(function* (code: string) {
     const result = yield new Promise<string>((resolve) => {
       setTimeout(() => resolve(code), 10)
     })
@@ -147,7 +147,7 @@ it('handle errors', async () => {
 
   const returnError = quansync(function* (fn: () => any) {
     try {
-      yield * fn()
+      yield* fn()
     }
     catch (err) {
       return err
@@ -155,7 +155,7 @@ it('handle errors', async () => {
   })
 
   const fn = quansync(function* (fn: () => any) {
-    return yield * fn()
+    return yield* fn()
   })
 
   await expect(returnError(throwError)).resolves.toThrowErrorMatchingInlineSnapshot(`[Error: async error]`)
@@ -186,7 +186,7 @@ it('yield generator', async () => {
     const result = (yield toString('str')) as string
     expect(result).toBe('str')
 
-    return result + (yield * toString('str'))
+    return result + (yield* toString('str'))
   })
 
   expect(multiply.sync()).toBe('strstr')
@@ -220,7 +220,7 @@ it('bind this', async () => {
   })
 
   const fn = quansync(function* (this: any) {
-    const result = yield * (obj.call(this))
+    const result = yield* (obj.call(this))
     expect(this).toBe(result)
     return result
   })

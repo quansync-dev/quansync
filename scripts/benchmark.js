@@ -14,7 +14,7 @@ const quansyncFn = quansync({
   async: async () => 10,
 })
 const quansyncAdd = quansync(/** @param {number} n */ function* (n) {
-  return (yield * quansyncFn()) + n
+  return (yield* quansyncFn()) + n
 })
 
 const gensyncFn = gensync({
@@ -22,7 +22,7 @@ const gensyncFn = gensync({
   async: async () => 10,
 })
 const gensyncAdd = gensync(/** @param {number} n */ function* (n) {
-  return (yield * gensyncFn()) + n
+  return (yield* gensyncFn()) + n
 })
 
 summary(() => {

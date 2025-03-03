@@ -35,7 +35,7 @@ const readFile = quansync({
 // Create a quansync function by providing a generator function
 const myFunction = quansync(function* (filename) {
   // Use `yield*` to call another quansync function
-  const code = yield * readFile(filename, 'utf8')
+  const code = yield* readFile(filename, 'utf8')
 
   return `// some custom prefix\n${code}`
 })
