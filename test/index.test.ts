@@ -94,7 +94,7 @@ it('yield optional promise', async () => {
         transform: async (code: string) => `${code}1`,
       },
     ], 'foo'),
-  ).toThrowErrorMatchingInlineSnapshot(`[Error: [Quansync] Yielded an unexpected promise in sync context]`)
+  ).toThrowErrorMatchingInlineSnapshot(`[QuansyncError: Unexpected promise in sync context]`)
 
   await expect(
     transform.async([
@@ -114,7 +114,7 @@ it('yield promise', async () => {
   })
 
   expect(() => run.sync('foo'))
-    .toThrowErrorMatchingInlineSnapshot(`[Error: [Quansync] Yielded an unexpected promise in sync context]`)
+    .toThrowErrorMatchingInlineSnapshot(`[QuansyncError: Unexpected promise in sync context]`)
   await expect(run.async('foo')).resolves.toBe('foo')
 })
 

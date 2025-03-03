@@ -3,7 +3,13 @@ import type { QuansyncAwaitableGenerator, QuansyncFn, QuansyncGenerator, Quansyn
 export * from './types'
 
 export const GET_IS_ASYNC = Symbol.for('quansync.getIsAsync')
-const ERROR_PROMISE_IN_SYNC = '[Quansync] Yielded an unexpected promise in sync context'
+
+export class QuansyncError extends Error {
+  constructor(message = 'Unexpected promise in sync context') {
+    super(message)
+    this.name = 'QuansyncError'
+  }
+}
 
 function isThenable<T>(value: any): value is Promise<T> {
   return value && typeof value === 'object' && typeof value.then === 'function'
@@ -37,7 +43,7 @@ function fromPromise<T>(promise: Promise<T> | T): QuansyncFn<T, []> {
     async: () => Promise.resolve(promise),
     sync: () => {
       if (isThenable(promise))
-        throw new Error(ERROR_PROMISE_IN_SYNC)
+        throw new QuansyncError()
       return promise
     },
   })
@@ -49,7 +55,7 @@ function unwrapYield(value: any, isAsync?: boolean): any {
   if (isQuansyncGenerator(value))
     return isAsync ? iterateAsync(value) : iterateSync(value)
   if (!isAsync && isThenable(value))
-    throw new Error(ERROR_PROMISE_IN_SYNC)
+    throw new QuansyncError()
   return value
 }
 
