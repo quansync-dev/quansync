@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { quansync, toGenerator } from '../src'
+import { bindThis, quansync, toGenerator } from '../src'
 import { quansync as quansyncMacro } from '../src/macro'
 
 it('basic', async () => {
@@ -221,7 +221,7 @@ it('import macro version', () => {
   expect(quansyncMacro).toBe(quansync)
 })
 
-it('bind this', async () => {
+it('invoke with explicit this', async () => {
   const obj = quansync({
     sync(this: any) {
       return this
@@ -255,4 +255,45 @@ it('bind this', async () => {
   await expect(cls.await()).resolves.instanceOf(Cls)
   await expect(cls.async()).resolves.instanceOf(Cls)
   expect(cls.sync()).instanceOf(Cls)
+})
+
+it('bind this', async () => {
+  const obj = quansync({
+    sync(this: any) {
+      return this
+    },
+    async async(this: any) {
+      return this
+    },
+  })
+
+  const fnFakeThis = { test: 1 }
+
+  const fn = quansync(function* (this: any, _num: number) {
+    const result = yield* (obj.call(this))
+    expect(this).toBe(result)
+    return result
+  })
+  const fnWithThis = fn.bind(fnFakeThis)
+  const fnWithThisAndPresetParams = fn.bind(fnFakeThis, 1)
+
+  // Should equal to `fn` itself.
+  await expect(fn.async(1)).resolves.toBe(fn)
+  // Should equal to `fn` itself.
+  expect(fn.sync(1)).toBe(fn)
+  await expect(fn(1)).resolves.toBe(undefined)
+
+  await expect(fnWithThis(1)).resolves.toBe(fnFakeThis)
+
+  await expect(fnWithThisAndPresetParams()).resolves.toBe(fnFakeThis)
+
+  // Use `bindThis` functionality.
+  const fnExplicitlyBindWithThis = bindThis(fn, fnFakeThis)
+  const fnExplicitlyBindWithThisAndPresetParams = bindThis(fn, fnFakeThis, 1)
+
+  await expect(fnExplicitlyBindWithThis.async(1)).resolves.toBe(fnFakeThis)
+  expect(fnExplicitlyBindWithThis.sync(1)).toBe(fnFakeThis)
+
+  await expect(fnExplicitlyBindWithThisAndPresetParams.async()).resolves.toBe(fnFakeThis)
+  expect(fnExplicitlyBindWithThisAndPresetParams.sync()).toBe(fnFakeThis)
 })
