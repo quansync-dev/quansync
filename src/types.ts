@@ -1,4 +1,8 @@
-export interface QuansyncInputObject<Return, Args extends any[]> {
+export interface QuansyncOptions {
+  onYield?: (value: any, isAsync: boolean) => any
+}
+
+export interface QuansyncInputObject<Return, Args extends any[]> extends QuansyncOptions {
   name?: string
   sync: (...args: Args) => Return
   async: (...args: Args) => Promise<Return>
