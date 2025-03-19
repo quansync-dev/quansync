@@ -283,17 +283,27 @@ it('bind this', async () => {
   expect(fn.sync(1)).toBe(fn)
   await expect(fn(1)).resolves.toBe(undefined)
 
+  // After invoking the `bind` method, the `sync` and `async` methods will be lost.
+  expect('sync' in fnWithThis).toBe(false)
+  expect('async' in fnWithThis).toBe(false)
   await expect(fnWithThis(1)).resolves.toBe(fnFakeThis)
 
+  expect('sync' in fnWithThisAndPresetParams).toBe(false)
+  expect('async' in fnWithThisAndPresetParams).toBe(false)
   await expect(fnWithThisAndPresetParams()).resolves.toBe(fnFakeThis)
 
   // Use `bindThis` functionality.
   const fnExplicitlyBindWithThis = bindThis(fn, fnFakeThis)
   const fnExplicitlyBindWithThisAndPresetParams = bindThis(fn, fnFakeThis, 1)
 
+  // The `sync` and `async` methods remained and bounded the same `this` and prest params as the `fn` did.
+  expect('sync' in fnExplicitlyBindWithThis).toBe(true)
+  expect('async' in fnExplicitlyBindWithThis).toBe(true)
   await expect(fnExplicitlyBindWithThis.async(1)).resolves.toBe(fnFakeThis)
   expect(fnExplicitlyBindWithThis.sync(1)).toBe(fnFakeThis)
 
+  expect('sync' in fnExplicitlyBindWithThisAndPresetParams).toBe(true)
+  expect('async' in fnExplicitlyBindWithThisAndPresetParams).toBe(true)
   await expect(fnExplicitlyBindWithThisAndPresetParams.async()).resolves.toBe(fnFakeThis)
   expect(fnExplicitlyBindWithThisAndPresetParams.sync()).toBe(fnFakeThis)
 })
