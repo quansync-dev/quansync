@@ -1,5 +1,5 @@
-import { expect, it } from 'vitest'
-import { bindThis, quansync, toGenerator } from '../src'
+import { expect, it, vi } from 'vitest'
+import { bindThis, getIsAsync, quansync, toGenerator } from '../src'
 import { quansync as quansyncMacro } from '../src/macro'
 
 it('basic', async () => {
@@ -255,6 +255,42 @@ it('invoke with explicit this', async () => {
   await expect(cls.await()).resolves.instanceOf(Cls)
   await expect(cls.async()).resolves.instanceOf(Cls)
   expect(cls.sync()).instanceOf(Cls)
+})
+
+it('call onYield hook', async () => {
+  const onYield = vi.fn(v => v + 1)
+  const run = quansync(function* () {
+    expect(yield 1).toBe(2)
+    expect(yield 2).toBe(3)
+  }, { onYield })
+
+  await run.async()
+  expect(onYield).toBeCalledTimes(2)
+  run.sync()
+  expect(onYield).toBeCalledTimes(4)
+
+  // custom error on promise
+  const run2 = quansync(function* () {
+    return yield Promise.resolve('foo')
+  }, {
+    onYield: (v, isAsync) => {
+      if (!isAsync && v instanceof Promise)
+        throw new TypeError('custom error')
+      return v
+    },
+  })
+  expect(() => run2.sync()).toThrowErrorMatchingInlineSnapshot(`[TypeError: custom error]`)
+  await expect(run2.async()).resolves.toMatchInlineSnapshot(`"foo"`)
+})
+
+it('getIsAsync', async () => {
+  const fn = quansync(function* () {
+    const isAsync: boolean = yield* getIsAsync()
+    return isAsync
+  })
+  await expect(fn.async()).resolves.toBe(true)
+  await expect(fn()).resolves.toBe(true)
+  expect(fn.sync()).toBe(false)
 })
 
 it('bind this', async () => {
