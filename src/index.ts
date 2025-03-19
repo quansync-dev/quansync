@@ -126,7 +126,7 @@ export function toGenerator<T>(promise: Promise<T> | QuansyncGenerator<T> | T): 
  * Bind this and preset params for Quansync function.
  */
 export function bindThis<T, A extends any[], B extends any[], R>(fn: QuansyncFn<R, [...A, ...B]>, thisArg: T, ...args: A): QuansyncFn<R, B> {
-  const newFn = fn.bind(thisArg, ...args)
+  const newFn = fn.bind(thisArg, ...args) as QuansyncFn<R, B>
   newFn.sync = fn.sync.bind(thisArg, ...args)
   newFn.async = fn.async.bind(thisArg, ...args)
   return newFn
