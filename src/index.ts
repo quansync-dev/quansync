@@ -1,4 +1,4 @@
-import type { QuansyncAwaitableGenerator, QuansyncFn, QuansyncGenerator, QuansyncGeneratorFn, QuansyncInput, QuansyncInputObject } from './types'
+import type { QuansyncAwaitableGenerator, QuansyncFn, QuansyncGenerator, QuansyncGeneratorFn, QuansyncInput, QuansyncInputObject, QuansyncOptions } from './types'
 
 export * from './types'
 
@@ -59,11 +59,16 @@ function unwrapYield(value: any, isAsync?: boolean): any {
   return value
 }
 
-function iterateSync<Return>(generator: QuansyncGenerator<Return, unknown>): Return {
+const DEFAULT_ON_YIELD = (value: any): any => value
+
+function iterateSync<Return>(
+  generator: QuansyncGenerator<Return, unknown>,
+  onYield: QuansyncOptions['onYield'] = DEFAULT_ON_YIELD,
+): Return {
   let current = generator.next()
   while (!current.done) {
     try {
-      current = generator.next(unwrapYield(current.value))
+      current = generator.next(unwrapYield(onYield(current.value, false)))
     }
     catch (err) {
       current = generator.throw(err)
@@ -72,11 +77,14 @@ function iterateSync<Return>(generator: QuansyncGenerator<Return, unknown>): Ret
   return unwrapYield(current.value)
 }
 
-async function iterateAsync<Return>(generator: QuansyncGenerator<Return, unknown>): Promise<Return> {
+async function iterateAsync<Return>(
+  generator: QuansyncGenerator<Return, unknown>,
+  onYield: QuansyncOptions['onYield'] = DEFAULT_ON_YIELD,
+): Promise<Return> {
   let current = generator.next()
   while (!current.done) {
     try {
-      current = generator.next(await unwrapYield(current.value, true))
+      current = generator.next(await unwrapYield(onYield(current.value, true), true))
     }
     catch (err) {
       current = generator.throw(err)
@@ -87,14 +95,15 @@ async function iterateAsync<Return>(generator: QuansyncGenerator<Return, unknown
 
 function fromGeneratorFn<Return, Args extends any[]>(
   generatorFn: QuansyncGeneratorFn<Return, Args>,
+  options?: QuansyncOptions,
 ): QuansyncFn<Return, Args> {
   return fromObject({
     name: generatorFn.name,
     async(...args) {
-      return iterateAsync(generatorFn.apply(this, args))
+      return iterateAsync(generatorFn.apply(this, args), options?.onYield)
     },
     sync(...args) {
-      return iterateSync(generatorFn.apply(this, args))
+      return iterateSync(generatorFn.apply(this, args), options?.onYield)
     },
   })
 }
@@ -103,14 +112,22 @@ function fromGeneratorFn<Return, Args extends any[]>(
  * Creates a new Quansync function, a "superposition" between async and sync.
  */
 export function quansync<Return, Args extends any[] = []>(
-  options: QuansyncInput<Return, Args> | Promise<Return>,
+  input: QuansyncInputObject<Return, Args>,
+): QuansyncFn<Return, Args>
+export function quansync<Return, Args extends any[] = []>(
+  input: QuansyncGeneratorFn<Return, Args> | Promise<Return>,
+  options?: QuansyncOptions,
+): QuansyncFn<Return, Args>
+export function quansync<Return, Args extends any[] = []>(
+  input: QuansyncInput<Return, Args> | Promise<Return>,
+  options?: QuansyncOptions,
 ): QuansyncFn<Return, Args> {
-  if (isThenable(options))
-    return fromPromise<Return>(options)
-  if (typeof options === 'function')
-    return fromGeneratorFn(options)
+  if (isThenable(input))
+    return fromPromise<Return>(input)
+  if (typeof input === 'function')
+    return fromGeneratorFn(input, options)
   else
-    return fromObject(options)
+    return fromObject(input)
 }
 
 /**
