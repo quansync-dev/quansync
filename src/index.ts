@@ -142,6 +142,7 @@ export function toGenerator<T>(promise: Promise<T> | QuansyncGenerator<T> | T): 
 /**
  * @returns `true` if the current context is async, `false` otherwise.
  */
-export function* getIsAsync(): Generator<typeof GET_IS_ASYNC, boolean, unknown> {
-  return !!(yield GET_IS_ASYNC)
-}
+export const getIsAsync = quansync({
+  async: () => Promise.resolve(true),
+  sync: () => false,
+})
