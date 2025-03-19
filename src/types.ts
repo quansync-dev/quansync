@@ -27,9 +27,7 @@ export type QuansyncAwaitableGenerator<Return = any, Yield = unknown> =
 export type QuansyncFn<Return = any, Args extends any[] = []> =
   ((...args: Args) => QuansyncAwaitableGenerator<Return>)
   & {
-    bind: <T, A extends any[], B extends any[]>(this: (this: T, ...args: [...A, ...B]) => QuansyncAwaitableGenerator<Return>, thisArg: T, ...args: A) => ((...args: B) => QuansyncAwaitableGenerator<Return>)
-  }
-  & {
     sync: (...args: Args) => Return
     async: (...args: Args) => Promise<Return>
+    bind: <T, A extends any[], B extends any[]>(this: (this: T, ...args: [...A, ...B]) => QuansyncAwaitableGenerator<Return>, thisArg: T, ...args: A) => ((...args: B) => QuansyncAwaitableGenerator<Return>)
   }
