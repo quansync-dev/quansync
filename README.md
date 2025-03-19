@@ -51,6 +51,23 @@ const result = myFunction.sync('./some-file.js')
 const asyncResult = await myFunction.async('./some-file.js')
 ```
 
+### `getIsAsync`
+
+Returns a boolean indicating whether the current execution is in async mode.
+
+```ts
+import { getIsAsync, quansync } from 'quansync'
+
+const fn = quansync(function* () {
+  const isAsync: boolean = yield* getIsAsync()
+  console.log(isAsync)
+})
+
+fn.sync() // false
+await fn() // true
+await fn.async() // true
+```
+
 ## Build-time Macro
 
 If you don't like the `function*` and `yield*` syntax, we also provide a build-time macro via [unplugin-quansync](https://github.com/unplugin/unplugin-quansync#usage) allowing you use quansync with async/await syntax, while still able to get the sync version out of that.

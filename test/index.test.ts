@@ -1,5 +1,5 @@
 import { expect, it, vi } from 'vitest'
-import { quansync, toGenerator } from '../src'
+import { getIsAsync, quansync, toGenerator } from '../src'
 import { quansync as quansyncMacro } from '../src/macro'
 
 it('basic', async () => {
@@ -281,4 +281,14 @@ it('call onYield hook', async () => {
   })
   expect(() => run2.sync()).toThrowErrorMatchingInlineSnapshot(`[TypeError: custom error]`)
   await expect(run2.async()).resolves.toMatchInlineSnapshot(`"foo"`)
+})
+
+it('getIsAsync', async () => {
+  const fn = quansync(function* () {
+    const isAsync: boolean = yield* getIsAsync()
+    return isAsync
+  })
+  await expect(fn.async()).resolves.toBe(true)
+  await expect(fn()).resolves.toBe(true)
+  expect(fn.sync()).toBe(false)
 })
