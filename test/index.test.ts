@@ -285,7 +285,7 @@ it('call onYield hook', async () => {
 
 it('getIsAsync', async () => {
   const fn = quansync(function* () {
-    const isAsync: boolean = yield* getIsAsync()
+    const isAsync = (yield getIsAsync()) as boolean
     return isAsync
   })
   await expect(fn.async()).resolves.toBe(true)
