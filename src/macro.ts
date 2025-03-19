@@ -1,4 +1,4 @@
-import type { QuansyncFn, QuansyncInput } from './types'
+import type { QuansyncFn, QuansyncGeneratorFn, QuansyncInputObject, QuansyncOptions } from './types'
 import { quansync as _quansync } from './index'
 
 export type * from './types'
@@ -13,6 +13,12 @@ export type * from './types'
  * @internal
  */
 export const quansync = _quansync as
+{
   <Return, Args extends any[] = []>(
-    options: QuansyncInput<Return, Args> | ((...args: Args) => Promise<Return> | Return),
-  ) => QuansyncFn<Return, Args>
+    input: QuansyncInputObject<Return, Args>,
+  ): QuansyncFn<Return, Args>
+  <Return, Args extends any[] = []>(
+    input: QuansyncGeneratorFn<Return, Args> | Promise<Return> | ((...args: Args) => Promise<Return> | Return),
+    options?: QuansyncOptions,
+  ): QuansyncFn<Return, Args>
+}
