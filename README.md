@@ -1,4 +1,4 @@
-# quansync
+# Quansync
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
@@ -6,113 +6,124 @@
 [![JSDocs][jsdocs-src]][jsdocs-href]
 [![License][license-src]][license-href]
 
-Create sync/async APIs with usable logic.
+> Create sync/async APIs with seamless interoperability
 
-**Quan**tum + **Sync** - "_Superposition_" between `sync` and `async`.
+## 🌟 Features
 
-- Typesafe
-- ESM, modern JavaScript
-- Zero dependencies
+- **Quantum Superposition**: Exist in both `sync` and `async` states
+- **Type Safety**: Full TypeScript support with precise types
+- **Zero Dependencies**: Lightweight and efficient
+- **Modern JavaScript**: ESM and CommonJS support
+- **Performance**: Minimal overhead (~150ns per yield)
+- **Flexible**: Multiple implementation approaches
 
-Heavily inspired by [`genasync`](https://github.com/loganfsmyth/gensync) by [@loganfsmyth](https://github.com/loganfsmyth).
-
-## Why & How
-
-Please refer to Anthony's blog post: [**Async, Sync, in Between**](https://antfu.me/posts/async-sync-in-between).
-
-## Usage
+## 📦 Installation
 
 ```bash
-pnpm i quansync
+# npm
+npm install quansync
+
+# yarn
+yarn add quansync
+
+# pnpm
+pnpm add quansync
 ```
 
-```ts
+## 🚀 Quick Start
+
+```typescript
 import fs from 'node:fs'
 import { quansync } from 'quansync'
 
-// Create a quansync function by providing `sync` and `async` implementations
+// Create a quansync function
 const readFile = quansync({
   sync: (path: string) => fs.readFileSync(path),
-  async: (path: string) => fs.promises.readFile(path),
+  async: (path: string) => fs.promises.readFile(path)
 })
 
-// Create a quansync function by providing a generator function
-const myFunction = quansync(function* (filename) {
-  // Use `yield*` to call another quansync function
-  const code = yield* readFile(filename, 'utf8')
+// Use synchronously
+const content = readFile.sync('./config.json')
 
-  return `// some custom prefix\n${code}`
-})
-
-// Use it as a sync function
-const result = myFunction.sync('./some-file.js')
-
-// Use it as an async function
-const asyncResult = await myFunction.async('./some-file.js')
+// Use asynchronously
+const asyncContent = await readFile.async('./config.json')
 ```
 
-### `getIsAsync`
+## 📚 Documentation
 
-Returns a boolean indicating whether the current execution is in async mode.
+### Getting Started
+- [Installation & Setup](./docs/tutorials/getting-started.md#installation)
+- [Basic Usage](./docs/tutorials/getting-started.md#basic-usage)
+- [Quick Examples](./docs/tutorials/getting-started.md#examples)
 
-```ts
-import { getIsAsync, quansync } from 'quansync'
+### Core Concepts
+- [Architecture Overview](./docs/guides/core-concepts.md#architecture)
+- [Execution Flow](./docs/guides/core-concepts.md#execution-flow)
+- [Type System](./docs/guides/core-concepts.md#type-system)
 
-const fn = quansync(function* () {
-  const isAsync: boolean = yield* getIsAsync()
-  console.log(isAsync)
-})
+### Features
+- Creating Functions
+  - [Object Approach](./docs/features/creating-functions.md#object-approach)
+  - [Generator Functions](./docs/features/creating-functions.md#generator-functions)
+  - [Build-time Macro](./docs/features/creating-functions.md#macro-approach)
 
-fn.sync() // false
-await fn() // true
-await fn.async() // true
-```
+- Using Functions
+  - [Synchronous Usage](./docs/features/using-functions.md#synchronous-usage)
+  - [Asynchronous Usage](./docs/features/using-functions.md#asynchronous-usage)
+  - [Error Handling](./docs/features/using-functions.md#error-handling)
 
-## Build-time Macro
+- Advanced Features
+  - [Generator Composition](./docs/features/generator-composition.md)
+  - [Context Management](./docs/features/context-management.md)
+  - [Build-time Macros](./docs/features/build-time-macro.md)
 
-If you don't like the `function*` and `yield*` syntax, we also provide a build-time macro via [unplugin-quansync](https://github.com/unplugin/unplugin-quansync#usage) allowing you use quansync with async/await syntax, while still able to get the sync version out of that.
+### Guides
+- [Best Practices](./docs/guides/best-practices.md)
+- [Performance Optimization](./docs/guides/performance.md)
+- [Troubleshooting](./docs/guides/troubleshooting.md)
 
-Here is an example:
+### API Reference
+- [Core Functions](./docs/api/api-reference.md#core-functions)
+- [Types](./docs/api/api-reference.md#types)
+- [Error Handling](./docs/api/api-reference.md#errors)
 
-```ts
-import fs from 'node:fs'
+## 💡 Examples
+
+### Build-time Macro Usage
+
+```typescript
 import { quansync } from 'quansync/macro'
 
-// Create a quansync function by providing `sync` and `async` implementations
-const readFile = quansync({
-  sync: (path: string) => fs.readFileSync(path),
-  async: (path: string) => fs.promises.readFile(path),
+const processFile = quansync(async (filename) => {
+  const content = await readFile(filename, 'utf8')
+  return content.toUpperCase()
 })
 
-// Create a quansync function by providing an **async** function
-const myFunction = quansync(async (filename) => {
-  // Use `await` to call another quansync function
-  const code = await readFile(filename, 'utf8')
-
-  return `// some custom prefix\n${code}`
-})
-
-// Use it as a sync function
-const result = myFunction.sync('./some-file.js')
-
-// Use it as an async function
-const asyncResult = await myFunction.async('./some-file.js')
+// Works in both modes
+const sync = processFile.sync('./input.txt')
+const async = await processFile.async('./input.txt')
 ```
 
-For more details on usage, refer to [unplugin-quansync's docs](https://github.com/unplugin/unplugin-quansync#usage).
+## 🔍 Why Quansync?
 
-## Benchmark
+Learn about the motivation and design philosophy in Anthony's blog post: [**Async, Sync, in Between**](https://antfu.me/posts/async-sync-in-between)
 
-Run the following command to benchmark the performance of `quansync`:
+## ⚡ Performance
 
 ```bash
+# Run benchmarks
 pnpm run build && pnpm run benchmark
 ```
 
-Benchmark results indicate that each `yield` incurs an overhead of
-approximately 150 ns, comparable to that of `await sync()`. (On Apple M1 Max)
+Each `yield` operation adds ~150ns overhead (comparable to `await sync()`).
 
-## Sponsors
+## 🤝 Contributing
+
+- 📥 [Pull Requests](https://github.com/quansync-dev/quansync/pulls)
+- 🐛 [Bug Reports](https://github.com/quansync-dev/quansync/issues)
+- 📚 [Documentation](./CONTRIBUTING.md)
+
+## 💖 Sponsors
 
 <p align="center">
   <a href="https://cdn.jsdelivr.net/gh/antfu/static/sponsors.svg">
@@ -126,12 +137,15 @@ approximately 150 ns, comparable to that of `await sync()`. (On Apple M1 Max)
   </a>
 </p>
 
-## License
+## 📜 License
 
-[MIT](./LICENSE) License © [Anthony Fu](https://github.com/antfu) and [Kevin Deng](https://github.com/sxzz)
+[MIT](./LICENSE) © [Anthony Fu](https://github.com/antfu) and [Kevin Deng](https://github.com/sxzz)
+
+## 🙏 Credits
+
+Inspired by [`genasync`](https://github.com/loganfsmyth/gensync) by [@loganfsmyth](https://github.com/loganfsmyth)
 
 <!-- Badges -->
-
 [npm-version-src]: https://img.shields.io/npm/v/quansync?style=flat&colorA=080f12&colorB=1fa669
 [npm-version-href]: https://npmjs.com/package/quansync
 [npm-downloads-src]: https://img.shields.io/npm/dm/quansync?style=flat&colorA=080f12&colorB=1fa669
