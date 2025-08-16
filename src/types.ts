@@ -11,31 +11,31 @@ export interface QuansyncInputObject<Return, Args extends any[]> extends Quansyn
 export type QuansyncGeneratorFn<Return, Args extends any[]>
   = ((...args: Args) => QuansyncGenerator<Return>)
 
-export type QuansyncInput<Return, Args extends any[]> =
-  | QuansyncInputObject<Return, Args>
-  | QuansyncGeneratorFn<Return, Args>
+export type QuansyncInput<Return, Args extends any[]>
+  = | QuansyncInputObject<Return, Args>
+    | QuansyncGeneratorFn<Return, Args>
 
-export type QuansyncGenerator<Return = any, Yield = unknown> =
-  Generator<Yield, Return, Awaited<Yield>> & { __quansync?: true }
+export type QuansyncGenerator<Return = any, Yield = unknown>
+  = Generator<Yield, Return, Awaited<Yield>> & { __quansync?: true }
 
-export type QuansyncAwaitableGenerator<Return = any, Yield = unknown> =
-  QuansyncGenerator<Return, Yield> & PromiseLike<Return>
+export type QuansyncAwaitableGenerator<Return = any, Yield = unknown>
+  = QuansyncGenerator<Return, Yield> & PromiseLike<Return>
 
 /**
  * "Superposition" function that can be consumed in both sync and async contexts.
  */
-export type QuansyncFn<Return = any, Args extends any[] = []> =
-  ((...args: Args) => QuansyncAwaitableGenerator<Return>)
-  & {
+export type QuansyncFn<Return = any, Args extends any[] = []>
+  = ((...args: Args) => QuansyncAwaitableGenerator<Return>)
+    & {
     /**
      * **Warning**: The `async` and `sync` methods will be lost after invoked.
      */
-    bind: <T, A extends any[], B extends any[]>(
-      this: (this: T, ...args: [...A, ...B]) => QuansyncAwaitableGenerator<Return>,
-      thisArg: T,
-      ...args: A
-    ) => ((...args: B) => QuansyncAwaitableGenerator<Return>)
+      bind: <T, A extends any[], B extends any[]>(
+        this: (this: T, ...args: [...A, ...B]) => QuansyncAwaitableGenerator<Return>,
+        thisArg: T,
+        ...args: A
+      ) => ((...args: B) => QuansyncAwaitableGenerator<Return>)
 
-    sync: (...args: Args) => Return
-    async: (...args: Args) => Promise<Return>
-  }
+      sync: (...args: Args) => Return
+      async: (...args: Args) => Promise<Return>
+    }
