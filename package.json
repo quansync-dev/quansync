@@ -2,7 +2,7 @@
   "name": "quansync",
   "type": "module",
   "version": "0.2.11",
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.22.0",
   "description": "Create sync/async APIs with usable logic",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "contributors": [
@@ -75,19 +75,19 @@
     "prepare": "simple-git-hooks"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^5.2.1",
-    "@types/node": "^24.3.0",
-    "bumpp": "^10.2.3",
-    "eslint": "^9.33.0",
+    "@antfu/eslint-config": "^6.2.0",
+    "@types/node": "^24.10.1",
+    "bumpp": "^10.3.1",
+    "eslint": "^9.39.1",
     "gensync": "1.0.0-beta.2",
-    "lint-staged": "^16.1.5",
+    "lint-staged": "^16.2.6",
     "mitata": "^1.0.34",
     "simple-git-hooks": "^2.13.1",
-    "tsx": "^4.20.4",
-    "typescript": "^5.9.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
     "unbuild": "^3.6.1",
-    "vite": "^7.1.2",
-    "vitest": "^3.2.4"
+    "vite": "^7.2.2",
+    "vitest": "^4.0.8"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged"
