@@ -70,7 +70,7 @@ await fn.async() // true
 
 ## Build-time Macro
 
-If you don't like the `function*` and `yield*` syntax, we also provide a build-time macro via [unplugin-quansync](https://github.com/unplugin/unplugin-quansync#usage) allowing you use quansync with async/await syntax, while still able to get the sync version out of that.
+If you don't like the `function*` and `yield*` syntax, we also provide a build-time macro via [unplugin-quansync](https://github.com/quansync-dev/unplugin-quansync#usage) allowing you use quansync with async/await syntax, while still able to get the sync version out of that.
 
 Here is an example:
 
