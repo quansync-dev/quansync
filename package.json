@@ -43,10 +43,6 @@
       "import": "./dist/macro.mjs",
       "require": "./dist/macro.cjs"
     },
-    "./types": {
-      "import": "./dist/types.mjs",
-      "require": "./dist/types.cjs"
-    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.cjs",
