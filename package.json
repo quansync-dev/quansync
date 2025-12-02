@@ -2,7 +2,7 @@
   "name": "quansync",
   "type": "module",
   "version": "0.2.11",
-  "packageManager": "pnpm@10.22.0",
+  "packageManager": "pnpm@10.24.0",
   "description": "Create sync/async APIs with usable logic",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
   "contributors": [
@@ -46,15 +46,16 @@
     "./types": {
       "import": "./dist/types.mjs",
       "require": "./dist/types.cjs"
-    }
+    },
+    "./package.json": "./package.json"
   },
-  "main": "./dist/index.mjs",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.mts",
+  "types": "./dist/index.d.cts",
   "typesVersions": {
     "*": {
       "*": [
-        "./dist/*",
+        "./dist/*.d.mts",
         "./*"
       ]
     }
@@ -63,31 +64,30 @@
     "dist"
   ],
   "scripts": {
-    "build": "unbuild",
-    "dev": "unbuild --stub",
+    "build": "tsdown",
+    "dev": "tsdown -w",
     "lint": "eslint .",
     "prepublishOnly": "pnpm run build",
     "release": "bumpp",
-    "start": "tsx src/index.ts",
     "benchmark": "node scripts/benchmark.js",
     "test": "vitest",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsgo --noEmit",
     "prepare": "simple-git-hooks"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^6.2.0",
     "@types/node": "^24.10.1",
-    "bumpp": "^10.3.1",
+    "@typescript/native-preview": "7.0.0-dev.20251202.1",
+    "bumpp": "^10.3.2",
     "eslint": "^9.39.1",
     "gensync": "1.0.0-beta.2",
-    "lint-staged": "^16.2.6",
+    "lint-staged": "^16.2.7",
     "mitata": "^1.0.34",
     "simple-git-hooks": "^2.13.1",
-    "tsx": "^4.20.6",
+    "tsdown": "^0.17.0-beta.5",
     "typescript": "^5.9.3",
-    "unbuild": "^3.6.1",
-    "vite": "^7.2.2",
-    "vitest": "^4.0.8"
+    "vite": "^7.2.6",
+    "vitest": "^4.0.15"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged"
