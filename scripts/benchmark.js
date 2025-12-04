@@ -2,7 +2,7 @@
 import gensync from 'gensync'
 import { bench, do_not_optimize, run, summary } from 'mitata'
 // eslint-disable-next-line antfu/no-import-dist
-import { quansync } from '../dist/index.mjs'
+import { quansync } from '../dist/index.js'
 
 const sync = () => 10
 const async = async () => 10
