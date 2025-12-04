@@ -1,7 +1,7 @@
 {
   "name": "quansync",
   "type": "module",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "packageManager": "pnpm@10.24.0",
   "description": "Create sync/async APIs with usable logic",
   "author": "Anthony Fu <anthonyfu117@hotmail.com>",
