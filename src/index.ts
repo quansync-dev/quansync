@@ -11,7 +11,7 @@ export class QuansyncError extends Error {
   }
 }
 
-function isThenable<T>(value: any): value is Promise<T> {
+function isThenable<T>(value: any): value is PromiseLike<T> {
   return value && typeof value === 'object' && typeof value.then === 'function'
 }
 function isQuansyncGenerator<T>(value: any): value is QuansyncGenerator<T> {
@@ -38,7 +38,7 @@ function fromObject<Return, Args extends any[]>(
   return fn
 }
 
-function fromPromise<T>(promise: Promise<T> | T): QuansyncFn<T, []> {
+function fromPromise<T>(promise: PromiseLike<T> | T): QuansyncFn<T, []> {
   return fromObject({
     async: () => Promise.resolve(promise),
     sync: () => {
@@ -115,11 +115,11 @@ export function quansync<Return, Args extends any[] = []>(
   input: QuansyncInputObject<Return, Args>,
 ): QuansyncFn<Return, Args>
 export function quansync<Return, Args extends any[] = []>(
-  input: QuansyncGeneratorFn<Return, Args> | Promise<Return>,
+  input: QuansyncGeneratorFn<Return, Args> | PromiseLike<Return>,
   options?: QuansyncOptions,
 ): QuansyncFn<Return, Args>
 export function quansync<Return, Args extends any[] = []>(
-  input: QuansyncInput<Return, Args> | Promise<Return>,
+  input: QuansyncInput<Return, Args> | PromiseLike<Return>,
   options?: QuansyncOptions,
 ): QuansyncFn<Return, Args> {
   if (isThenable(input))
@@ -133,7 +133,7 @@ export function quansync<Return, Args extends any[] = []>(
 /**
  * Converts a promise to a Quansync generator.
  */
-export function toGenerator<T>(promise: Promise<T> | QuansyncGenerator<T> | T): QuansyncGenerator<T> {
+export function toGenerator<T>(promise: PromiseLike<T> | QuansyncGenerator<T> | T): QuansyncGenerator<T> {
   if (isQuansyncGenerator(promise))
     return promise
   return fromPromise(promise)()
