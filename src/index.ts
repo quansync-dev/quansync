@@ -146,3 +146,14 @@ export const getIsAsync = quansync({
   async: () => Promise.resolve(true),
   sync: () => false,
 })
+
+export const all = quansync({
+  sync(iterable: Iterable<QuansyncGenerator<any>>) {
+    return Array.from(iterable, gen => iterateSync(gen))
+  },
+  async(iterable: Iterable<QuansyncGenerator<any>>) {
+    return Promise.all(
+      Array.from(iterable, gen => iterateAsync(gen)),
+    )
+  },
+}) as <T>(iterable: Iterable<QuansyncGenerator<T>>) => QuansyncAwaitableGenerator<T[]>

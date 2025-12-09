@@ -1,5 +1,5 @@
 import { expect, it, vi } from 'vitest'
-import { getIsAsync, quansync, toGenerator } from '../src'
+import { all, getIsAsync, quansync, toGenerator } from '../src'
 import { quansync as quansyncMacro } from '../src/macro'
 
 it('basic', async () => {
@@ -308,4 +308,20 @@ it('thenable', async () => {
   const add = quansync(Promise.resolve(5))
   expect(() => add.sync()).toThrowErrorMatchingInlineSnapshot(`[QuansyncError: Unexpected promise in sync context]`)
   await expect(add.async()).resolves.toBe(5)
+})
+
+it('combine all', async () => {
+  const add = quansync({
+    name: 'add',
+    sync: (a: number, b: number) => a + b,
+    async: async (a: number, b: number) => {
+      await new Promise(resolve => setTimeout(resolve, 10))
+      return a + b
+    },
+  })
+  const calc = quansync(function* () {
+    return all([add(1, 2), add(3, 4)][Symbol.iterator]())
+  })
+  expect(calc.sync()).toEqual([3, 7])
+  await expect(calc()).resolves.toEqual([3, 7])
 })

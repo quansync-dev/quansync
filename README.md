@@ -68,6 +68,23 @@ await fn() // true
 await fn.async() // true
 ```
 
+### `all`
+
+```ts
+import { all, quansync } from 'quansync'
+
+const loadFiles = quansync(function* () {
+  return yield* all([
+    readFile('./one.js'),
+    readFile('./two.js'),
+    readFile('./three.js'),
+  ])
+})
+
+const results = loadFiles.sync()
+const asyncResults = await loadFiles.async()
+```
+
 ## Build-time Macro
 
 If you don't like the `function*` and `yield*` syntax, we also provide a build-time macro via [unplugin-quansync](https://github.com/quansync-dev/unplugin-quansync#usage) allowing you use quansync with async/await syntax, while still able to get the sync version out of that.
