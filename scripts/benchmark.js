@@ -77,4 +77,6 @@ summary(() => {
 })
 
 console.info('Running benchmark...')
-await run()
+await run({
+  format: 'markdown',
+})
