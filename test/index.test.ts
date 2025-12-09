@@ -193,6 +193,17 @@ it('yield generator', async () => {
   await expect(multiply.async()).resolves.toBe('strstr')
 })
 
+it('generator to generator', async () => {
+  const fn = quansync({
+    name: 'fn',
+    sync: () => 1,
+    async: async () => 2,
+  })
+  const generator = fn()
+  const result = toGenerator(generator)
+  expect(result).toBe(generator)
+})
+
 it('yield toGenerator array', async () => {
   const run = quansync(function* () {
     const input = ['1', 2, 3]
@@ -291,4 +302,10 @@ it('getIsAsync', async () => {
   await expect(fn.async()).resolves.toBe(true)
   await expect(fn()).resolves.toBe(true)
   expect(fn.sync()).toBe(false)
+})
+
+it('thenable', async () => {
+  const add = quansync(Promise.resolve(5))
+  expect(() => add.sync()).toThrowErrorMatchingInlineSnapshot(`[QuansyncError: Unexpected promise in sync context]`)
+  await expect(add.async()).resolves.toBe(5)
 })
