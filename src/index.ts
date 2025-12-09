@@ -35,7 +35,7 @@ function fromObject<Return, Args extends any[]>(
   }
   fn.sync = options.sync
   fn.async = options.async
-  return fn
+  return fn as any
 }
 
 function fromPromise<T>(promise: PromiseLike<T> | T): QuansyncFn<T, []> {
@@ -136,7 +136,7 @@ export function quansync<Return, Args extends any[] = []>(
 export function toGenerator<T>(promise: PromiseLike<T> | QuansyncGenerator<T> | T): QuansyncGenerator<T> {
   if (isQuansyncGenerator(promise))
     return promise
-  return fromPromise(promise)()
+  return fromPromise(promise)() as any
 }
 
 /**

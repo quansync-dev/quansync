@@ -2,12 +2,13 @@
 import gensync from 'gensync'
 import { bench, do_not_optimize, run, summary } from 'mitata'
 // eslint-disable-next-line antfu/no-import-dist
-import { quansync } from '../dist/index.js'
+import { all, quansync } from '../dist/index.js'
 
 const sync = () => 10
 const async = async () => 10
 const addNativeSync = /** @param {number} n */ n => sync() + n
 const addNativeAsync = /** @param {number} n */ async n => await async() + n
+const nativeAll = () => Promise.all([async(), async()])
 
 const quansyncFn = quansync({
   sync: () => 10,
@@ -16,6 +17,9 @@ const quansyncFn = quansync({
 const quansyncAdd = quansync(/** @param {number} n */ function* (n) {
   return (yield* quansyncFn()) + n
 })
+const quansyncAll = quansync(function* () {
+  return all([quansyncFn(), quansyncFn()])
+})
 
 const gensyncFn = gensync({
   sync: () => 10,
@@ -23,6 +27,9 @@ const gensyncFn = gensync({
 })
 const gensyncAdd = gensync(/** @param {number} n */ function* (n) {
   return (yield* gensyncFn()) + n
+})
+const gensyncAll = gensync(function* () {
+  return yield* gensync.all([gensyncFn(), gensyncFn()])
 })
 
 summary(() => {
@@ -53,6 +60,15 @@ summary(() => {
 })
 
 summary(() => {
+  bench('sync: quansync.all', function* () {
+    yield () => do_not_optimize(quansyncAll.sync())
+  })
+  bench('sync: gensync add', function* () {
+    yield () => do_not_optimize(gensyncAll.sync())
+  })
+})
+
+summary(() => {
   bench('async: native fn', function* () {
     yield async () => do_not_optimize(await async())
   })
@@ -73,6 +89,18 @@ summary(() => {
   })
   bench('async: gensync add', function* () {
     yield async () => do_not_optimize(await gensyncAdd.async(1))
+  })
+})
+
+summary(() => {
+  bench('async: native Promise.all', function* () {
+    yield async () => do_not_optimize(await nativeAll())
+  })
+  bench('async: quansync.all', function* () {
+    yield async () => do_not_optimize(await quansyncAll.async())
+  })
+  bench('async: gensync add', function* () {
+    yield async () => do_not_optimize(await gensyncAll.async())
   })
 })
 

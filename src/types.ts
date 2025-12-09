@@ -21,21 +21,25 @@ export type QuansyncGenerator<Return = any, Yield = unknown>
 export type QuansyncAwaitableGenerator<Return = any, Yield = unknown>
   = QuansyncGenerator<Return, Yield> & PromiseLike<Return>
 
+export type QuansyncUnwrapGenerator<T> = T extends QuansyncGenerator<infer R, any>
+  ? R
+  : T
+
 /**
  * "Superposition" function that can be consumed in both sync and async contexts.
  */
 export type QuansyncFn<Return = any, Args extends any[] = []>
-  = ((...args: Args) => QuansyncAwaitableGenerator<Return>)
+  = ((...args: Args) => QuansyncAwaitableGenerator<QuansyncUnwrapGenerator<Return>>)
     & {
     /**
      * **Warning**: The `async` and `sync` methods will be lost after invoked.
      */
       bind: <T, A extends any[], B extends any[]>(
-        this: (this: T, ...args: [...A, ...B]) => QuansyncAwaitableGenerator<Return>,
+        this: (this: T, ...args: [...A, ...B]) => QuansyncAwaitableGenerator<QuansyncUnwrapGenerator<Return>>,
         thisArg: T,
         ...args: A
-      ) => ((...args: B) => QuansyncAwaitableGenerator<Return>)
+      ) => ((...args: B) => QuansyncAwaitableGenerator<QuansyncUnwrapGenerator<Return>>)
 
-      sync: (...args: Args) => Return
-      async: (...args: Args) => Promise<Return>
+      sync: (...args: Args) => QuansyncUnwrapGenerator<Return>
+      async: (...args: Args) => Promise<QuansyncUnwrapGenerator<Return>>
     }
