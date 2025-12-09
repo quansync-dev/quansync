@@ -21,14 +21,14 @@ function isQuansyncGenerator<T>(value: any): value is QuansyncGenerator<T> {
 function fromObject<Return, Args extends any[]>(
   options: QuansyncInputObject<Return, Args>,
 ): QuansyncFn<Return, Args> {
-  const generator = function* (this: any, args: Args): QuansyncGenerator<Return, any> {
+  const generator = function* (this: any, ...args: Args): QuansyncGenerator<Return, any> {
     const isAsync = yield GET_IS_ASYNC
     if (isAsync)
       return yield options.async.apply(this, args)
     return options.sync.apply(this, args)
   }
   function fn(this: any, ...args: Args): any {
-    const iter = generator.call(this, args) as unknown as QuansyncAwaitableGenerator<Return, Args>
+    const iter = generator.apply(this, args) as unknown as QuansyncAwaitableGenerator<Return, Args>
     iter.then = (...thenArgs) => options.async.apply(this, args).then(...thenArgs)
     iter.__quansync = true
     return iter
